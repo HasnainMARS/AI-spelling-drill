@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Spelling Drill — PTE & IELTS Practice</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
@@ -22,6 +23,7 @@
 
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
 body{
   background:var(--paper);
   font-family:'IBM Plex Sans',sans-serif;
@@ -33,6 +35,11 @@ body{
 .app-shell{
   max-width:560px;
   margin:0 auto;
+}
+
+@media (min-width:700px){
+  body{ padding-top:48px; }
+  .app-shell{ max-width:620px; }
 }
 
 /* ---------- Header ---------- */
@@ -63,7 +70,7 @@ body{
 .headline{
   font-family:'Fraunces',serif;
   font-weight:600;
-  font-size:28px;
+  font-size:clamp(22px, 6vw, 28px);
   margin:0;
   letter-spacing:-0.01em;
 }
@@ -74,13 +81,15 @@ body{
 }
 .nav-row{
   display:flex;
+  flex-wrap:wrap;
   gap:6px;
   margin-top:16px;
   position:relative;
   z-index:1;
 }
 .nav-btn{
-  flex:1;
+  flex:1 1 auto;
+  min-width:0;
   background:rgba(247,243,233,0.08);
   border:1px solid rgba(247,243,233,0.18);
   color:rgba(247,243,233,0.8);
@@ -97,6 +106,9 @@ body{
   color:var(--ink-navy);
   border-color:var(--paper);
   font-weight:600;
+}
+@media (max-width:420px){
+  .nav-btn{ flex:1 1 45%; font-size:11.5px; padding:8px 6px; }
 }
 
 /* ---------- Card ---------- */
@@ -364,13 +376,13 @@ body{
 }
 .band-score{
   font-family:'IBM Plex Mono',monospace;
-  font-size:56px;
+  font-size:clamp(38px, 13vw, 56px);
   font-weight:600;
   text-align:center;
   color:var(--ink-navy);
   line-height:1;
 }
-.band-score span{font-size:22px; opacity:.45;}
+.band-score span{font-size:0.4em; opacity:.45;}
 .band-descriptor{
   text-align:center;
   font-family:'Fraunces',serif;
@@ -807,6 +819,23 @@ body{
   opacity:.5;
   margin:18px 14px 0;
   line-height:1.5;
+}
+
+.grammar-input,
+.add-word-row input{
+  font-size:16px;
+}
+
+@media (max-width:380px){
+  body{ padding:20px 10px 36px; }
+  .header-bar{ padding:16px 16px 14px; }
+  .card{ padding:20px 14px 22px; }
+  .pill{ padding:10px 13px; }
+  .stat-box,
+  .progress-stat-row .stat-box{ padding:10px 4px; }
+  .stat-num{ font-size:17px; }
+  .play-btn{ width:74px; height:74px; }
+  .word-chip button{ padding:5px 9px; }
 }
 
 .hidden{display:none !important;}
