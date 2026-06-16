@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Spelling Drill — PTE & IELTS Practice</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+:root{
+  --ink-navy:#14213D;
+  --paper:#F7F3E9;
+  --paper-deep:#EFE8D8;
+  --graphite:#3A362F;
+  --highlighter:#F2C94C;
+  --pass:#1F7A5C;
+  --pass-soft:#E2F0E9;
+  --red-pen:#C1432B;
+  --red-soft:#F7E3DD;
+  --chalk-blue:#5B7FA6;
+  --rule:rgba(20,33,61,0.14);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  font-family:'IBM Plex Sans',sans-serif;
+  color:var(--graphite);
+  min-height:100%;
+  padding:28px 16px 48px;
+}
+
+.app-shell{
+  max-width:560px;
+  margin:0 auto;
+}
+
+/* ---------- Header ---------- */
+.header-bar{
+  background:var(--ink-navy);
+  color:var(--paper);
+  border-radius:14px 14px 0 0;
+  padding:18px 22px 16px;
+  position:relative;
+  overflow:hidden;
+}
+.header-bar::after{
+  content:"";
+  position:absolute;
+  right:-30px; top:-30px;
+  width:140px; height:140px;
+  border:1px solid rgba(247,243,233,0.12);
+  border-radius:50%;
+}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--highlighter);
+  margin:0 0 6px;
+}
+.headline{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:28px;
+  margin:0;
+  letter-spacing:-0.01em;
+}
+.sub{
+  font-size:13px;
+  color:rgba(247,243,233,0.72);
+  margin:6px 0 0;
+}
+.nav-row{
+  display:flex;
+  gap:6px;
+  margin-top:16px;
+  position:relative;
+  z-index:1;
+}
+.nav-btn{
+  flex:1;
+  background:rgba(247,243,233,0.08);
+  border:1px solid rgba(247,243,233,0.18);
+  color:rgba(247,243,233,0.8);
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:12.5px;
+  font-weight:500;
+  padding:9px 8px;
+  border-radius:8px;
+  cursor:pointer;
+  text-align:center;
+}
+.nav-btn.active{
+  background:var(--paper);
+  color:var(--ink-navy);
+  border-color:var(--paper);
+  font-weight:600;
+}
+
+/* ---------- Card ---------- */
+.card{
+  background:#fff;
+  border:1px solid var(--rule);
+  border-radius:0 0 14px 14px;
+  box-shadow:0 18px 40px -28px rgba(20,33,61,0.5);
+  padding:24px 22px 26px;
+}
+
+/* ---------- Setup screen ---------- */
+.field-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--ink-navy);
+  opacity:.65;
+  margin:0 0 10px;
+}
+.pill-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:22px;
+}
+.pill{
+  border:1.5px solid var(--rule);
+  background:var(--paper);
+  color:var(--graphite);
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:13.5px;
+  font-weight:500;
+  padding:9px 16px;
+  border-radius:999px;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+.pill:hover{border-color:var(--chalk-blue);}
+.pill.active{
+  background:var(--ink-navy);
+  border-color:var(--ink-navy);
+  color:var(--paper);
+}
+.pill.active.mode-exam{
+  background:var(--red-pen);
+  border-color:var(--red-pen);
+}
+.helper-text{
+  font-size:12.5px;
+  color:var(--graphite);
+  opacity:.65;
+  margin:-14px 0 22px;
+  line-height:1.5;
+}
+.start-btn{
+  width:100%;
+  background:var(--ink-navy);
+  color:var(--paper);
+  border:none;
+  font-family:'IBM Plex Sans',sans-serif;
+  font-weight:600;
+  font-size:15px;
+  padding:14px;
+  border-radius:10px;
+  cursor:pointer;
+  letter-spacing:.01em;
+}
+.start-btn:hover{background:#1c2c52;}
+
+/* ---------- Game screen ---------- */
+.game-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
+}
+.q-counter{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  color:var(--graphite);
+  opacity:.7;
+}
+.score-chip{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  background:var(--paper-deep);
+  padding:4px 10px;
+  border-radius:999px;
+  color:var(--ink-navy);
+}
+.dots{
+  display:flex;
+  gap:6px;
+  margin-bottom:26px;
+}
+.dot{
+  width:18px; height:6px;
+  border-radius:4px;
+  background:var(--rule);
+}
+.dot.correct{background:var(--pass);}
+.dot.incorrect{background:var(--red-pen);}
+.dot.current{background:var(--chalk-blue);}
+
+.audio-zone{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:18px 0 8px;
+}
+.play-btn{
+  width:84px; height:84px;
+  border-radius:50%;
+  background:var(--ink-navy);
+  border:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  transition:transform .12s ease;
+}
+.play-btn:active{transform:scale(.96);}
+.play-btn:disabled{background:var(--rule); cursor:not-allowed;}
+.play-btn.speaking::before{
+  content:"";
+  position:absolute;
+  inset:-8px;
+  border-radius:50%;
+  border:2px solid var(--highlighter);
+  animation:pulse 1.1s ease-out infinite;
+}
+@keyframes pulse{
+  0%{transform:scale(.9);opacity:.9;}
+  100%{transform:scale(1.35);opacity:0;}
+}
+.play-icon{width:30px;height:30px;fill:var(--paper);}
+.audio-caption{
+  font-size:13px;
+  color:var(--graphite);
+  opacity:.7;
+  margin:14px 0 2px;
+  text-align:center;
+}
+.replay-count{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  color:var(--chalk-blue);
+}
+.timer-track{
+  width:100%;
+  height:5px;
+  background:var(--paper-deep);
+  border-radius:4px;
+  margin:14px 0 4px;
+  overflow:hidden;
+}
+.timer-fill{
+  height:100%;
+  background:var(--red-pen);
+  width:100%;
+  transform-origin:left;
+}
+
+.answer-row{
+  display:flex;
+  gap:8px;
+  margin:22px 0 6px;
+}
+.answer-input{
+  flex:1;
+  border:1.5px solid var(--rule);
+  border-radius:8px;
+  padding:12px 14px;
+  font-size:16px;
+  font-family:'IBM Plex Mono',monospace;
+  letter-spacing:.02em;
+  color:var(--ink-navy);
+}
+.answer-input:focus{outline:none;border-color:var(--chalk-blue);}
+.answer-input:disabled{background:var(--paper-deep);}
+.check-btn{
+  background:var(--ink-navy);
+  color:var(--paper);
+  border:none;
+  border-radius:8px;
+  padding:0 18px;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+}
+.check-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+.tool-row{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:18px;
+}
+.text-btn{
+  background:none;
+  border:none;
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:12.5px;
+  color:var(--chalk-blue);
+  cursor:pointer;
+  padding:4px 0;
+}
+.text-btn:disabled{opacity:.4;cursor:not-allowed;}
+.hint-display{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:18px;
+  letter-spacing:.18em;
+  text-align:center;
+  color:var(--graphite);
+  margin:4px 0 18px;
+  min-height:22px;
+}
+
+.feedback{
+  border-radius:10px;
+  padding:14px 16px;
+  font-size:14px;
+  line-height:1.55;
+  display:none;
+}
+.feedback.show{display:block;}
+.feedback.correct{background:var(--pass-soft); color:var(--pass);}
+.feedback.incorrect{background:var(--red-soft); color:var(--red-pen);}
+.feedback-word{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:17px;
+  letter-spacing:.03em;
+  margin-top:6px;
+}
+.diff-match{color:inherit;}
+.diff-miss{
+  background:rgba(193,67,43,0.18);
+  border-bottom:2px solid var(--red-pen);
+  border-radius:2px;
+}
+.next-btn{
+  width:100%;
+  margin-top:14px;
+  background:var(--ink-navy);
+  color:var(--paper);
+  border:none;
+  border-radius:8px;
+  padding:12px;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+}
+
+/* ---------- Result screen ---------- */
+.result-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--chalk-blue);
+  text-align:center;
+  margin:0 0 6px;
+}
+.band-score{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:56px;
+  font-weight:600;
+  text-align:center;
+  color:var(--ink-navy);
+  line-height:1;
+}
+.band-score span{font-size:22px; opacity:.45;}
+.band-descriptor{
+  text-align:center;
+  font-family:'Fraunces',serif;
+  font-size:19px;
+  font-weight:600;
+  color:var(--graphite);
+  margin:2px 0 18px;
+}
+.band-meter{
+  position:relative;
+  height:10px;
+  border-radius:6px;
+  background:linear-gradient(90deg,#C1432B,#F2C94C,#5B7FA6,#1F7A5C);
+  margin:0 4px 6px;
+}
+.band-marker{
+  position:absolute;
+  top:-5px;
+  width:3px;
+  height:20px;
+  background:var(--ink-navy);
+  border-radius:2px;
+  transform:translateX(-50%);
+}
+.band-scale{
+  display:flex;
+  justify-content:space-between;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  color:var(--graphite);
+  opacity:.5;
+  margin:0 4px 22px;
+}
+.stat-row{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+.stat-box{
+  flex:1;
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:10px;
+  padding:12px;
+  text-align:center;
+}
+.stat-num{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:20px;
+  font-weight:600;
+  color:var(--ink-navy);
+}
+.stat-label{
+  font-size:11px;
+  color:var(--graphite);
+  opacity:.65;
+  margin-top:2px;
+}
+.review-title{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--ink-navy);
+  opacity:.65;
+  margin:0 0 10px;
+}
+.review-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:9px 0;
+  border-bottom:1px solid var(--rule);
+  font-size:13.5px;
+}
+.review-item:last-child{border-bottom:none;}
+.review-correct{font-family:'IBM Plex Mono',monospace; color:var(--pass);}
+.review-wrong{font-family:'IBM Plex Mono',monospace; color:var(--red-pen); text-decoration:line-through;}
+.no-mistakes{
+  text-align:center;
+  font-size:13.5px;
+  color:var(--graphite);
+  opacity:.7;
+  padding:14px 0;
+}
+.result-actions{
+  display:flex;
+  gap:10px;
+  margin-top:14px;
+}
+.result-actions button{
+  flex:1;
+  border-radius:8px;
+  padding:12px;
+  font-weight:600;
+  font-size:13.5px;
+  cursor:pointer;
+}
+.btn-retry{background:var(--ink-navy); color:var(--paper); border:none;}
+.btn-settings{background:var(--paper); color:var(--ink-navy); border:1.5px solid var(--rule);}
+
+.btn-share{
+  width:100%;
+  margin-top:10px;
+  background:var(--paper);
+  color:var(--ink-navy);
+  border:1.5px solid var(--ink-navy);
+  border-radius:8px;
+  padding:12px;
+  font-weight:600;
+  font-size:13.5px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+.btn-share:hover{background:var(--paper-deep);}
+.btn-share svg{width:16px;height:16px;fill:var(--ink-navy);}
+.share-status{
+  text-align:center;
+  font-size:12px;
+  color:var(--pass);
+  min-height:16px;
+  margin:8px 0 0;
+}
+.share-fallback{
+  margin-top:10px;
+}
+.share-fallback textarea{
+  width:100%;
+  height:64px;
+  resize:none;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  padding:10px;
+  border:1.5px solid var(--rule);
+  border-radius:8px;
+  color:var(--graphite);
+  background:var(--paper);
+}
+
+/* ---------- Tips section ---------- */
+.tips-section{
+  margin-top:26px;
+  padding-top:20px;
+  border-top:1px dashed var(--rule);
+}
+.tips-title{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:18px;
+  margin:0 0 4px;
+  color:var(--ink-navy);
+}
+.tips-subtitle{
+  font-size:12.5px;
+  color:var(--graphite);
+  opacity:.65;
+  margin:0 0 16px;
+}
+.tip-card{
+  border-radius:10px;
+  padding:12px 14px;
+  margin-bottom:10px;
+  font-size:13.5px;
+  line-height:1.55;
+  background:var(--paper);
+  border:1px solid var(--rule);
+}
+.tip-card.tailored{
+  border-color:var(--highlighter);
+  background:#FDF8E9;
+}
+.tip-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--chalk-blue);
+  margin:0 0 4px;
+}
+.tip-card.tailored .tip-eyebrow{color:#B8860B;}
+.tip-name{font-weight:600; color:var(--ink-navy);}
+
+/* ---------- Shared sub-screen header ---------- */
+.screen-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:18px;
+}
+.screen-title{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:21px;
+  margin:0 0 4px;
+  color:var(--ink-navy);
+}
+.screen-subtitle{
+  font-size:12.5px;
+  color:var(--graphite);
+  opacity:.65;
+  margin:0;
+  max-width:380px;
+}
+.back-link{
+  background:none;
+  border:1.5px solid var(--rule);
+  color:var(--graphite);
+  font-size:12px;
+  font-weight:500;
+  padding:7px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+/* ---------- History / Progress screen ---------- */
+.progress-stat-row{
+  display:flex;
+  gap:10px;
+  margin-bottom:22px;
+}
+.progress-stat-row .stat-box{
+  flex:1;
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:10px;
+  padding:12px 8px;
+  text-align:center;
+}
+.chart-wrap{
+  border:1px solid var(--rule);
+  border-radius:10px;
+  padding:14px 10px 6px;
+  margin-bottom:22px;
+}
+.chart-caption{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--graphite);
+  opacity:.55;
+  margin:0 4px 8px;
+}
+.session-list{margin-bottom:18px;}
+.session-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid var(--rule);
+  font-size:13px;
+}
+.session-item:last-child{border-bottom:none;}
+.session-meta{color:var(--graphite); opacity:.6; font-size:11.5px;}
+.session-score{
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:600;
+  color:var(--ink-navy);
+}
+.empty-state{
+  text-align:center;
+  padding:36px 12px;
+  color:var(--graphite);
+  opacity:.6;
+  font-size:13.5px;
+}
+.clear-history-btn{
+  width:100%;
+  background:var(--paper);
+  border:1.5px solid var(--rule);
+  color:var(--red-pen);
+  font-size:12.5px;
+  font-weight:600;
+  padding:10px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* ---------- Grammar Check screen ---------- */
+.grammar-input{
+  width:100%;
+  min-height:96px;
+  border:1.5px solid var(--rule);
+  border-radius:10px;
+  padding:12px 14px;
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:14px;
+  color:var(--graphite);
+  resize:vertical;
+  margin-bottom:12px;
+}
+.grammar-input:focus{outline:none;border-color:var(--chalk-blue);}
+.grammar-check-btn{
+  width:100%;
+  background:var(--ink-navy);
+  color:var(--paper);
+  border:none;
+  border-radius:8px;
+  padding:13px;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+  margin-bottom:6px;
+}
+.grammar-check-btn:disabled{opacity:.55; cursor:not-allowed;}
+.grammar-loading{
+  text-align:center;
+  font-size:12.5px;
+  color:var(--chalk-blue);
+  padding:14px 0;
+}
+.grammar-error{
+  background:var(--red-soft);
+  color:var(--red-pen);
+  border-radius:10px;
+  padding:12px 14px;
+  font-size:13px;
+  margin-top:10px;
+}
+.grammar-result{margin-top:18px;}
+.grammar-block-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-navy);
+  opacity:.6;
+  margin:0 0 8px;
+}
+.grammar-diff{
+  border:1px solid var(--rule);
+  border-radius:10px;
+  padding:14px 16px;
+  font-size:14.5px;
+  line-height:1.7;
+  margin-bottom:18px;
+}
+.gword-added{
+  background:var(--pass-soft);
+  color:var(--pass);
+  border-bottom:2px solid var(--pass);
+  border-radius:3px;
+  padding:0 1px;
+}
+.gword-removed{
+  color:var(--red-pen);
+  text-decoration:line-through;
+  opacity:.7;
+  padding:0 1px;
+}
+.no-fixes{
+  text-align:center;
+  padding:10px 0;
+  color:var(--pass);
+  font-size:13.5px;
+  font-weight:600;
+}
+
+.start-btn:disabled{
+  background:var(--rule);
+  cursor:not-allowed;
+}
+
+/* ---------- My Words screen ---------- */
+.word-chip-wrap{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:18px;
+}
+.word-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:999px;
+  padding:6px 6px 6px 13px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  color:var(--ink-navy);
+}
+.word-chip button{
+  background:none;
+  border:none;
+  color:var(--red-pen);
+  cursor:pointer;
+  font-size:15px;
+  line-height:1;
+  padding:3px 7px;
+  border-radius:50%;
+}
+.word-chip button:hover{background:var(--red-soft);}
+.add-word-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:6px;
+}
+.add-word-row input{
+  flex:1;
+  border:1.5px solid var(--rule);
+  border-radius:8px;
+  padding:12px 14px;
+  font-size:14px;
+  font-family:'IBM Plex Sans',sans-serif;
+  color:var(--ink-navy);
+}
+.add-word-row input:focus{outline:none;border-color:var(--chalk-blue);}
+.add-word-row button{
+  background:var(--ink-navy);
+  color:var(--paper);
+  border:none;
+  border-radius:8px;
+  padding:0 18px;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+}
+.inline-feedback{
+  font-size:12px;
+  color:var(--chalk-blue);
+  min-height:16px;
+  margin:0 0 16px;
+}
+
+.disclaimer{
+  text-align:center;
+  font-size:11px;
+  color:var(--graphite);
+  opacity:.5;
+  margin:18px 14px 0;
+  line-height:1.5;
+}
+
+.hidden{display:none !important;}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <div class="header-bar">
+    <p class="eyebrow" id="header-eyebrow">PTE Academic · Practice</p>
+    <h1 class="headline">AI Spelling Drill</h1>
+    <p class="sub">Listen, then write what you hear — just like the dictation tasks.</p>
+    <div class="nav-row" id="nav-row">
+      <button class="nav-btn active" data-screen="home">Spelling Drill</button>
+      <button class="nav-btn" data-screen="mywords">My Words</button>
+      <button class="nav-btn" data-screen="grammar">Grammar Check</button>
+      <button class="nav-btn" data-screen="history">Progress</button>
+    </div>
+  </div>
+
+  <div class="card">
+
+    <!-- SETUP SCREEN -->
+    <div id="setup-screen">
+      <p class="field-label">Test format</p>
+      <div class="pill-row" id="format-pills">
+        <button class="pill active" data-format="pte_academic">PTE Academic</button>
+        <button class="pill" data-format="pte_ukvi">PTE Academic UKVI</button>
+        <button class="pill" data-format="pte_core">PTE Core</button>
+        <button class="pill" data-format="ielts">IELTS</button>
+      </div>
+      <p class="helper-text" id="format-helper">Your score report will be scaled to match PTE Academic's 10–90 scoring.</p>
+
+      <p class="field-label">Word list</p>
+      <div class="pill-row" id="level-pills">
+        <button class="pill active" data-level="foundation">Foundation</button>
+        <button class="pill" data-level="intermediate">Intermediate</button>
+        <button class="pill" data-level="advanced">Advanced</button>
+        <button class="pill" data-level="mixed">Mixed</button>
+        <button class="pill" data-level="custom">Custom</button>
+      </div>
+      <p class="helper-text hidden" id="level-helper"></p>
+
+      <p class="field-label">Mode</p>
+      <div class="pill-row" id="mode-pills">
+        <button class="pill active" data-mode="practice">Practice — hints &amp; replays</button>
+        <button class="pill" data-mode="exam">Exam — one play, timed</button>
+      </div>
+      <p class="helper-text" id="mode-helper">Practice mode lets you replay the audio and reveal hints if you get stuck.</p>
+
+      <p class="field-label">Voice accent</p>
+      <div class="pill-row" id="accent-pills">
+        <button class="pill active" data-accent="default">Default</button>
+        <button class="pill" data-accent="en-US">American</button>
+        <button class="pill" data-accent="en-GB">British</button>
+        <button class="pill" data-accent="en-AU">Australian</button>
+      </div>
+      <p class="helper-text">Real listening sections use several native-English accents — practising with more than one helps.</p>
+
+      <button class="start-btn" id="start-btn">Start drill — 10 words</button>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" class="hidden">
+      <div class="game-top">
+        <span class="q-counter" id="q-counter">Question 1 of 10</span>
+        <span class="score-chip" id="score-chip">Score: 0</span>
+      </div>
+      <div class="dots" id="dots"></div>
+
+      <div class="audio-zone">
+        <button class="play-btn" id="play-btn" title="Play word">
+          <svg class="play-icon" viewBox="0 0 24 24"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-.77-3.29-2-4.24v8.48c1.23-.95 2-2.47 2-4.24z"/><path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+        </button>
+        <p class="audio-caption" id="audio-caption">Tap to hear the word</p>
+        <p class="replay-count" id="replay-count"></p>
+        <div class="timer-track hidden" id="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+      </div>
+
+      <p class="hint-display" id="hint-display"></p>
+
+      <div class="answer-row">
+        <input type="text" class="answer-input" id="answer-input" placeholder="Type the word…" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button class="check-btn" id="check-btn">Check</button>
+      </div>
+
+      <div class="tool-row">
+        <button class="text-btn" id="hint-btn">Show hint</button>
+        <button class="text-btn" id="skip-btn">Skip word</button>
+      </div>
+
+      <div class="feedback" id="feedback">
+        <div id="feedback-text"></div>
+        <button class="next-btn" id="next-btn">Next word →</button>
+      </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="hidden">
+      <p class="result-eyebrow" id="result-eyebrow">Your score report</p>
+      <div class="band-score" id="band-score">— <span id="band-max">/ 90</span></div>
+      <p class="band-descriptor" id="band-descriptor"></p>
+
+      <div class="band-meter"><div class="band-marker" id="band-marker"></div></div>
+      <div class="band-scale" id="band-scale"><span>10</span><span>30</span><span>50</span><span>70</span><span>90</span></div>
+
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num" id="stat-correct">0/10</div><div class="stat-label">Correct</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-accuracy">0%</div><div class="stat-label">Accuracy</div></div>
+      </div>
+
+      <p class="review-title">Review</p>
+      <div id="review-list"></div>
+
+      <div class="result-actions">
+        <button class="btn-retry" id="retry-btn">Try again</button>
+        <button class="btn-settings" id="settings-btn">Change settings</button>
+      </div>
+      <button class="btn-share" id="share-btn">
+        <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+        Share result
+      </button>
+      <p class="share-status" id="share-status"></p>
+      <div class="share-fallback hidden" id="share-fallback">
+        <textarea id="share-text-area" readonly></textarea>
+      </div>
+
+      <div class="tips-section">
+        <p class="tips-title">Sharpen your spelling</p>
+        <p class="tips-subtitle">A few methods worth building into your routine.</p>
+        <div id="tips-list"></div>
+      </div>
+    </div>
+
+    <!-- HISTORY / PROGRESS SCREEN -->
+    <div id="history-screen" class="hidden">
+      <div class="screen-header">
+        <div>
+          <p class="screen-title">Your progress</p>
+          <p class="screen-subtitle">Every drill you complete is saved on this device.</p>
+        </div>
+        <button class="back-link" data-screen="home">Back</button>
+      </div>
+
+      <div id="history-loading" class="empty-state">Loading your history…</div>
+
+      <div id="history-content" class="hidden">
+        <div class="progress-stat-row">
+          <div class="stat-box"><div class="stat-num" id="hist-sessions">0</div><div class="stat-label">Sessions</div></div>
+          <div class="stat-box"><div class="stat-num" id="hist-best">0%</div><div class="stat-label">Best accuracy</div></div>
+          <div class="stat-box"><div class="stat-num" id="hist-streak">0</div><div class="stat-label">Day streak</div></div>
+        </div>
+
+        <div class="chart-wrap">
+          <p class="chart-caption">Accuracy over your last sessions</p>
+          <div id="history-chart"></div>
+        </div>
+
+        <p class="review-title">Recent sessions</p>
+        <div class="session-list" id="session-list"></div>
+
+        <button class="clear-history-btn" id="clear-history-btn">Clear saved history</button>
+      </div>
+
+      <div id="history-empty" class="empty-state hidden">No drills saved yet. Complete a round to start tracking your progress.</div>
+    </div>
+
+    <!-- GRAMMAR CHECK SCREEN -->
+    <div id="grammar-screen" class="hidden">
+      <div class="screen-header">
+        <div>
+          <p class="screen-title">Grammar check</p>
+          <p class="screen-subtitle">Paste a sentence or short paragraph to catch grammar mistakes.</p>
+        </div>
+        <button class="back-link" data-screen="home">Back</button>
+      </div>
+
+      <textarea class="grammar-input" id="grammar-input" maxlength="600" placeholder="Type or paste a sentence or short paragraph…"></textarea>
+      <p class="helper-text" style="margin-top:-6px;">Works best on a sentence or short paragraph — up to about 100 words.</p>
+      <button class="grammar-check-btn" id="grammar-check-btn">Check grammar</button>
+      <div class="grammar-loading hidden" id="grammar-loading">Checking your text…</div>
+      <div class="grammar-error hidden" id="grammar-error">Grammar check isn't available right now. Please try again in a moment.</div>
+
+      <div class="grammar-result hidden" id="grammar-result">
+        <p class="grammar-block-label">Corrected version</p>
+        <div class="grammar-diff" id="grammar-diff"></div>
+        <div id="grammar-notes"></div>
+      </div>
+    </div>
+
+    <!-- MY WORDS SCREEN -->
+    <div id="mywords-screen" class="hidden">
+      <div class="screen-header">
+        <div>
+          <p class="screen-title">My word list</p>
+          <p class="screen-subtitle">Words you add here show up under "Custom" in the spelling drill.</p>
+        </div>
+        <button class="back-link" data-screen="home">Back</button>
+      </div>
+
+      <div class="add-word-row">
+        <input type="text" id="custom-word-input" placeholder="Add a word…" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button id="add-word-btn">Add</button>
+      </div>
+      <p class="inline-feedback" id="custom-word-feedback"></p>
+
+      <button class="text-btn" id="bulk-add-toggle">+ Add several words at once</button>
+      <div class="hidden" id="bulk-add-area" style="margin-top:10px;">
+        <textarea class="grammar-input" id="bulk-word-input" placeholder="Paste words separated by commas, spaces or new lines…"></textarea>
+        <button class="grammar-check-btn" id="bulk-add-btn">Add all</button>
+      </div>
+
+      <p class="review-title" style="margin-top:24px;">Saved words (<span id="custom-word-count">0</span>)</p>
+      <div class="word-chip-wrap" id="custom-word-list"></div>
+      <div class="empty-state hidden" id="custom-empty">No custom words yet — add some above to get started.</div>
+
+      <button class="clear-history-btn" id="clear-words-btn">Clear all custom words</button>
+    </div>
+
+  </div>
+
+  <p class="disclaimer">Independent practice tool inspired by listening-and-spelling tasks used in tests like PTE Academic, PTE Academic UKVI, PTE Core and IELTS. Not affiliated with or endorsed by Pearson, IDP, the British Council, or Cambridge Assessment English.</p>
+</div>
+
+<script>
+// When this file runs inside Claude.ai, window.storage is provided automatically.
+// When self-hosted on a regular web server, this polyfills the same API using
+// the browser's own localStorage so saved history / custom words still work.
+if(!window.storage){
+  window.storage = {
+    async get(key, shared){
+      const raw = localStorage.getItem(key);
+      if(raw === null) throw new Error('Key not found: ' + key);
+      return { key, value: raw, shared: !!shared };
+    },
+    async set(key, value, shared){
+      localStorage.setItem(key, value);
+      return { key, value, shared: !!shared };
+    },
+    async delete(key, shared){
+      localStorage.removeItem(key);
+      return { key, deleted: true, shared: !!shared };
+    },
+    async list(prefix, shared){
+      const keys = [];
+      for(let i=0;i<localStorage.length;i++){
+        const k = localStorage.key(i);
+        if(!prefix || (k && k.startsWith(prefix))) keys.push(k);
+      }
+      return { keys, prefix, shared: !!shared };
+    }
+  };
+}
+
+const WORD_BANKS = {
+  foundation: ["necessary","separate","definitely","accommodate","embarrass","occurrence","recommend","beginning","achieve","immediately","knowledge","government","environment","existence","independent","license","maintenance","occasionally","privilege","receive","schedule","calendar","category","foreign","grammar","harass","argument","conscience","rhythm","vacuum","weird"],
+  intermediate: ["analysis","approach","assessment","concept","consistent","context","definition","derive","distribute","economic","establish","estimate","evident","factor","finance","formula","function","identify","indicate","individual","interpret","involve","legislate","method","occur","percentage","principle","proceed","require","research","respond","section","sector","significant","source","specific","structure","theory","vary","tendency"],
+  advanced: ["phenomenon","hypothesis","subsequently","ambiguous","questionnaire","millennium","bureaucracy","entrepreneur","miscellaneous","pharmaceutical","reconnaissance","supersede","vacillate","idiosyncrasy","accommodation","conscientious","exaggerate","indispensable","liaison","maneuver","paradigm","perseverance","prerogative","simultaneous","threshold","ubiquitous","unprecedented","vulnerable","plagiarism","correspondence"]
+};
+
+const ROUND_LENGTH = 10;
+const EXAM_SECONDS = 18;
+const PRACTICE_REPLAYS = 2; // extra replays beyond the first play
+
+let settings = { format: "pte_academic", level: "foundation", mode: "practice", accent: "default" };
+let round = { words: [], index: 0, correctCount: 0, results: [], playsUsed: 0 };
+let timerHandle = null;
+
+const els = {
+  headerEyebrow: document.getElementById('header-eyebrow'),
+  navRow: document.getElementById('nav-row'),
+  navBtns: document.querySelectorAll('.nav-btn'),
+  backLinks: document.querySelectorAll('.back-link'),
+  formatPills: document.querySelectorAll('#format-pills .pill'),
+  formatHelper: document.getElementById('format-helper'),
+  levelPills: document.querySelectorAll('#level-pills .pill'),
+  levelHelper: document.getElementById('level-helper'),
+  modePills: document.querySelectorAll('#mode-pills .pill'),
+  modeHelper: document.getElementById('mode-helper'),
+  accentPills: document.querySelectorAll('#accent-pills .pill'),
+  startBtn: document.getElementById('start-btn'),
+  setupScreen: document.getElementById('setup-screen'),
+  gameScreen: document.getElementById('game-screen'),
+  resultScreen: document.getElementById('result-screen'),
+  historyScreen: document.getElementById('history-screen'),
+  grammarScreen: document.getElementById('grammar-screen'),
+  mywordsScreen: document.getElementById('mywords-screen'),
+  qCounter: document.getElementById('q-counter'),
+  scoreChip: document.getElementById('score-chip'),
+  dots: document.getElementById('dots'),
+  playBtn: document.getElementById('play-btn'),
+  audioCaption: document.getElementById('audio-caption'),
+  replayCount: document.getElementById('replay-count'),
+  timerTrack: document.getElementById('timer-track'),
+  timerFill: document.getElementById('timer-fill'),
+  hintDisplay: document.getElementById('hint-display'),
+  answerInput: document.getElementById('answer-input'),
+  checkBtn: document.getElementById('check-btn'),
+  hintBtn: document.getElementById('hint-btn'),
+  skipBtn: document.getElementById('skip-btn'),
+  feedback: document.getElementById('feedback'),
+  feedbackText: document.getElementById('feedback-text'),
+  nextBtn: document.getElementById('next-btn'),
+  resultEyebrow: document.getElementById('result-eyebrow'),
+  bandScore: document.getElementById('band-score'),
+  bandMax: document.getElementById('band-max'),
+  bandDescriptor: document.getElementById('band-descriptor'),
+  bandMarker: document.getElementById('band-marker'),
+  bandScale: document.getElementById('band-scale'),
+  statCorrect: document.getElementById('stat-correct'),
+  statAccuracy: document.getElementById('stat-accuracy'),
+  reviewList: document.getElementById('review-list'),
+  retryBtn: document.getElementById('retry-btn'),
+  settingsBtn: document.getElementById('settings-btn'),
+  shareBtn: document.getElementById('share-btn'),
+  shareStatus: document.getElementById('share-status'),
+  shareFallback: document.getElementById('share-fallback'),
+  shareTextArea: document.getElementById('share-text-area'),
+  tipsList: document.getElementById('tips-list'),
+  historyLoading: document.getElementById('history-loading'),
+  historyContent: document.getElementById('history-content'),
+  historyEmpty: document.getElementById('history-empty'),
+  histSessions: document.getElementById('hist-sessions'),
+  histBest: document.getElementById('hist-best'),
+  histStreak: document.getElementById('hist-streak'),
+  historyChart: document.getElementById('history-chart'),
+  sessionList: document.getElementById('session-list'),
+  clearHistoryBtn: document.getElementById('clear-history-btn'),
+  grammarInput: document.getElementById('grammar-input'),
+  grammarCheckBtn: document.getElementById('grammar-check-btn'),
+  grammarLoading: document.getElementById('grammar-loading'),
+  grammarError: document.getElementById('grammar-error'),
+  grammarResult: document.getElementById('grammar-result'),
+  grammarDiff: document.getElementById('grammar-diff'),
+  grammarNotes: document.getElementById('grammar-notes'),
+  customWordInput: document.getElementById('custom-word-input'),
+  addWordBtn: document.getElementById('add-word-btn'),
+  customWordFeedback: document.getElementById('custom-word-feedback'),
+  bulkAddToggle: document.getElementById('bulk-add-toggle'),
+  bulkAddArea: document.getElementById('bulk-add-area'),
+  bulkWordInput: document.getElementById('bulk-word-input'),
+  bulkAddBtn: document.getElementById('bulk-add-btn'),
+  customWordCount: document.getElementById('custom-word-count'),
+  customWordList: document.getElementById('custom-word-list'),
+  customEmpty: document.getElementById('custom-empty'),
+  clearWordsBtn: document.getElementById('clear-words-btn'),
+};
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+if('speechSynthesis' in window){
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => {};
+}
+
+function pickWords(level){
+  let pool;
+  if(level === 'custom'){
+    pool = customWords;
+  } else if(level === 'mixed'){
+    pool = [...WORD_BANKS.foundation, ...WORD_BANKS.intermediate, ...WORD_BANKS.advanced];
+  } else {
+    pool = WORD_BANKS[level];
+  }
+  const size = level === 'custom' ? Math.min(ROUND_LENGTH, pool.length) : ROUND_LENGTH;
+  return shuffle(pool).slice(0, size);
+}
+
+// ---------- Test formats ----------
+const TEST_FORMATS = {
+  pte_academic: { label: "PTE Academic", min: 10, max: 90, helper: "Your score report will be scaled to match PTE Academic's 10–90 scoring." },
+  pte_ukvi: { label: "PTE Academic UKVI", min: 10, max: 90, helper: "Same scoring scale as PTE Academic — UKVI is the visa-approved version of the same test." },
+  pte_core: { label: "PTE Core", min: 10, max: 90, helper: "Scored on PTE Core's 10–90 scale, used for skilled migration applications." },
+  ielts: { label: "IELTS", min: 1, max: 9, helper: "Your score report will be scaled to IELTS-style band scores from 1 to 9." }
+};
+
+function formatScore(value, formatKey){
+  return formatKey === 'ielts' ? value.toFixed(1) : String(Math.round(value));
+}
+
+function computeBand(correctCount, total, format){
+  const raw = format.min + correctCount * ((format.max - format.min) / total);
+  return format.max - format.min <= 10 ? Math.round(raw * 2) / 2 : Math.round(raw);
+}
+
+function bandDescriptor(score, format){
+  const fraction = (score - format.min) / (format.max - format.min);
+  if(fraction >= 0.9) return 'Exceptional';
+  if(fraction >= 0.7) return 'Advanced';
+  if(fraction >= 0.5) return 'Proficient';
+  if(fraction >= 0.3) return 'Developing';
+  return 'Foundation';
+}
+
+// ---------- Setup screen ----------
+els.formatPills.forEach(btn => btn.addEventListener('click', () => {
+  els.formatPills.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  settings.format = btn.dataset.format;
+  const format = TEST_FORMATS[settings.format];
+  els.headerEyebrow.textContent = `${format.label} · Practice`;
+  els.formatHelper.textContent = format.helper;
+}));
+
+els.levelPills.forEach(btn => btn.addEventListener('click', () => {
+  els.levelPills.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  settings.level = btn.dataset.level;
+  updateLevelHelper();
+}));
+
+els.modePills.forEach(btn => btn.addEventListener('click', () => {
+  els.modePills.forEach(b => { b.classList.remove('active','mode-exam'); });
+  btn.classList.add('active');
+  settings.mode = btn.dataset.mode;
+  if(settings.mode === 'exam'){
+    btn.classList.add('mode-exam');
+    els.modeHelper.textContent = 'Exam mode plays the word once and gives you ' + EXAM_SECONDS + ' seconds — closer to real test conditions.';
+  } else {
+    els.modeHelper.textContent = 'Practice mode lets you replay the audio and reveal hints if you get stuck.';
+  }
+}));
+
+els.accentPills.forEach(btn => btn.addEventListener('click', () => {
+  els.accentPills.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  settings.accent = btn.dataset.accent;
+}));
+
+function updateLevelHelper(){
+  if(settings.level !== 'custom'){
+    els.levelHelper.classList.add('hidden');
+    els.levelHelper.innerHTML = '';
+    els.startBtn.disabled = false;
+    els.startBtn.textContent = `Start drill — ${ROUND_LENGTH} words`;
+    return;
+  }
+  els.levelHelper.classList.remove('hidden');
+  if(!customWords.length){
+    els.levelHelper.innerHTML = `You haven't added any custom words yet — <button class="text-btn" id="goto-mywords-link" style="display:inline;padding:0;">add some in My Words</button>.`;
+    els.startBtn.disabled = true;
+    els.startBtn.textContent = 'Start drill';
+  } else {
+    const size = Math.min(ROUND_LENGTH, customWords.length);
+    els.levelHelper.textContent = `${customWords.length} word${customWords.length===1?'':'s'} saved — this round will use ${size}.`;
+    els.startBtn.disabled = false;
+    els.startBtn.textContent = `Start drill — ${size} word${size===1?'':'s'}`;
+  }
+}
+
+els.levelHelper.addEventListener('click', (e) => {
+  if(e.target.id === 'goto-mywords-link') showScreen('mywords');
+});
+
+els.startBtn.addEventListener('click', () => startRound());
+
+// ---------- Top-level screen navigation ----------
+function showScreen(name){
+  els.setupScreen.classList.add('hidden');
+  els.gameScreen.classList.add('hidden');
+  els.resultScreen.classList.add('hidden');
+  els.historyScreen.classList.add('hidden');
+  els.grammarScreen.classList.add('hidden');
+  els.mywordsScreen.classList.add('hidden');
+  els.navRow.classList.remove('hidden');
+
+  if(name === 'home') els.setupScreen.classList.remove('hidden');
+  else if(name === 'game'){ els.gameScreen.classList.remove('hidden'); els.navRow.classList.add('hidden'); }
+  else if(name === 'result') els.resultScreen.classList.remove('hidden');
+  else if(name === 'history'){ els.historyScreen.classList.remove('hidden'); renderHistoryScreen(); }
+  else if(name === 'grammar') els.grammarScreen.classList.remove('hidden');
+  else if(name === 'mywords'){ els.mywordsScreen.classList.remove('hidden'); renderMyWordsList(); }
+
+  const homeGroup = ['home','game','result'];
+  els.navBtns.forEach(b => b.classList.toggle('active', b.dataset.screen === name || (homeGroup.includes(name) && b.dataset.screen === 'home')));
+}
+
+els.navBtns.forEach(btn => btn.addEventListener('click', () => showScreen(btn.dataset.screen)));
+els.backLinks.forEach(btn => btn.addEventListener('click', () => showScreen(btn.dataset.screen)));
+
+function startRound(){
+  const words = pickWords(settings.level);
+  if(!words.length){
+    showScreen('mywords');
+    return;
+  }
+  round = { words, index: 0, correctCount: 0, results: [], playsUsed: 0 };
+  showScreen('game');
+  buildDots();
+  loadWord();
+}
+
+function buildDots(){
+  els.dots.innerHTML = '';
+  for(let i=0;i<round.words.length;i++){
+    const d = document.createElement('div');
+    d.className = 'dot';
+    els.dots.appendChild(d);
+  }
+}
+
+function updateDots(){
+  const dotEls = els.dots.children;
+  for(let i=0;i<dotEls.length;i++){
+    dotEls[i].classList.remove('current','correct','incorrect');
+    if(round.results[i] === true) dotEls[i].classList.add('correct');
+    else if(round.results[i] === false) dotEls[i].classList.add('incorrect');
+    else if(i === round.index) dotEls[i].classList.add('current');
+  }
+}
+
+// ---------- Word flow ----------
+function currentWord(){ return round.words[round.index]; }
+
+function loadWord(){
+  round.playsUsed = 0;
+  els.qCounter.textContent = `Question ${round.index+1} of ${round.words.length}`;
+  els.scoreChip.textContent = `Score: ${round.correctCount}`;
+  updateDots();
+  els.answerInput.value = '';
+  els.answerInput.disabled = false;
+  els.checkBtn.disabled = false;
+  els.feedback.classList.remove('show','correct','incorrect');
+  els.hintDisplay.textContent = '';
+  els.hintBtn.disabled = false;
+  els.skipBtn.disabled = false;
+  els.playBtn.disabled = false;
+  clearInterval(timerHandle);
+  els.timerTrack.classList.toggle('hidden', settings.mode !== 'exam');
+
+  if(settings.mode === 'exam'){
+    els.hintBtn.classList.add('hidden');
+    els.skipBtn.classList.add('hidden');
+    els.replayCount.textContent = 'One play only';
+  } else {
+    els.hintBtn.classList.remove('hidden');
+    els.skipBtn.classList.remove('hidden');
+    els.replayCount.textContent = `Replays left: ${PRACTICE_REPLAYS}`;
+  }
+
+  els.answerInput.focus();
+  // Auto-play once the word loads
+  setTimeout(() => playWord(), 350);
+}
+
+function speakAvailable(){
+  return 'speechSynthesis' in window;
+}
+
+function pickVoiceFor(accent){
+  if(accent === 'default' || !speakAvailable()) return null;
+  const voices = window.speechSynthesis.getVoices();
+  if(!voices || !voices.length) return null;
+  return voices.find(v => v.lang === accent) || voices.find(v => v.lang && v.lang.startsWith(accent.split('-')[0]) && v.lang.toLowerCase().includes(accent.split('-')[1].toLowerCase())) || null;
+}
+
+function playWord(){
+  const word = currentWord();
+  const maxPlays = settings.mode === 'exam' ? 1 : (1 + PRACTICE_REPLAYS);
+  if(round.playsUsed >= maxPlays) return;
+  round.playsUsed++;
+
+  if(settings.mode === 'practice'){
+    els.replayCount.textContent = `Replays left: ${Math.max(0, maxPlays - round.playsUsed)}`;
+  } else {
+    els.replayCount.textContent = 'Played';
+  }
+
+  if(speakAvailable()){
+    try{
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(word);
+      utter.rate = 0.82;
+      utter.pitch = 1;
+      const voice = pickVoiceFor(settings.accent);
+      if(voice) utter.voice = voice;
+      els.playBtn.classList.add('speaking');
+      els.audioCaption.textContent = 'Playing…';
+      utter.onend = () => {
+        els.playBtn.classList.remove('speaking');
+        els.audioCaption.textContent = 'Tap to hear again';
+        if(round.playsUsed >= maxPlays) els.playBtn.disabled = true;
+        if(settings.mode === 'exam') startExamTimer();
+      };
+      window.speechSynthesis.speak(utter);
+    }catch(e){
+      flashWordFallback(word, maxPlays);
+    }
+  } else {
+    flashWordFallback(word, maxPlays);
+  }
+}
+
+function flashWordFallback(word, maxPlays){
+  // Browsers without speech synthesis: briefly reveal the word instead
+  els.audioCaption.textContent = word;
+  setTimeout(() => {
+    els.audioCaption.textContent = 'Now type what you saw';
+    if(round.playsUsed >= maxPlays) els.playBtn.disabled = true;
+    if(settings.mode === 'exam') startExamTimer();
+  }, 1400);
+}
+
+function startExamTimer(){
+  let remaining = EXAM_SECONDS;
+  els.timerFill.style.transition = 'none';
+  els.timerFill.style.width = '100%';
+  requestAnimationFrame(() => {
+    els.timerFill.style.transition = `width ${EXAM_SECONDS}s linear`;
+    els.timerFill.style.width = '0%';
+  });
+  clearInterval(timerHandle);
+  timerHandle = setInterval(() => {
+    remaining--;
+    if(remaining <= 0){
+      clearInterval(timerHandle);
+      submitAnswer(true);
+    }
+  }, 1000);
+}
+
+els.playBtn.addEventListener('click', playWord);
+
+els.hintBtn.addEventListener('click', () => {
+  const word = currentWord();
+  const revealed = els.hintDisplay.dataset.stage ? parseInt(els.hintDisplay.dataset.stage) : 0;
+  const nextStage = revealed + 1;
+  els.hintDisplay.dataset.stage = nextStage;
+  if(nextStage === 1){
+    els.hintDisplay.textContent = `${word.length} letters`;
+  } else {
+    els.hintDisplay.textContent = `${word[0].toUpperCase()}${'_ '.repeat(word.length-1)}`;
+    els.hintBtn.disabled = true;
+  }
+});
+
+els.skipBtn.addEventListener('click', () => submitAnswer(true));
+
+els.checkBtn.addEventListener('click', () => submitAnswer(false));
+els.answerInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') submitAnswer(false);
+});
+
+function diffHTML(correct, user){
+  const c = correct.split('');
+  const u = (user || '').split('');
+  const len = Math.max(c.length, u.length);
+  let html = '';
+  for(let i=0;i<len;i++){
+    const cc = c[i] || '';
+    const cu = u[i] || '';
+    const match = cc && cu && cc.toLowerCase() === cu.toLowerCase();
+    html += `<span class="${match ? 'diff-match' : 'diff-miss'}">${cc || '·'}</span>`;
+  }
+  return html;
+}
+
+function submitAnswer(forced){
+  clearInterval(timerHandle);
+  const word = currentWord();
+  const userInput = els.answerInput.value.trim();
+  const isCorrect = !forced && userInput.toLowerCase() === word.toLowerCase();
+
+  round.results[round.index] = isCorrect;
+  round.history = round.history || [];
+  if(isCorrect) round.correctCount++;
+
+  if(!isCorrect){
+    round.mistakes = round.mistakes || [];
+    round.mistakes.push({ word, attempt: forced ? (userInput || '(skipped)') : userInput });
+  }
+
+  els.answerInput.disabled = true;
+  els.checkBtn.disabled = true;
+  els.hintBtn.disabled = true;
+  els.skipBtn.disabled = true;
+  els.playBtn.disabled = true;
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
+
+  els.feedback.classList.add('show', isCorrect ? 'correct' : 'incorrect');
+  if(isCorrect){
+    els.feedbackText.innerHTML = `Correct — well spelled.<div class="feedback-word">${word}</div>`;
+  } else {
+    els.feedbackText.innerHTML = `Not quite. Correct spelling:<div class="feedback-word">${diffHTML(word, userInput)}</div>`;
+  }
+
+  updateDots();
+  els.scoreChip.textContent = `Score: ${round.correctCount}`;
+}
+
+els.nextBtn.addEventListener('click', () => {
+  round.index++;
+  if(round.index >= round.words.length){
+    endRound();
+  } else {
+    loadWord();
+  }
+});
+
+// ---------- Spelling tips ----------
+const CORE_TIPS = [
+  { name: "Look, say, cover, write, check", body: "Read the word carefully, say it out loud, cover it, write it from memory, then check against the original. Repeating this for words you miss builds the visual pattern faster than re-reading alone." },
+  { name: "Break it into chunks", body: "Say longer words syllable by syllable — ac-com-mo-date, ne-ces-sa-ry — instead of trying to spell the whole word in one go." },
+  { name: "Keep a running mistake list", body: "Note every word you get wrong in one place and re-test yourself on just that list every few days. A short list of your own tricky words is more useful than a long generic one." },
+  { name: "Notice the word inside the word", body: "Many tricky words contain a smaller, familiar word or root — sep-a-rate, defin-ite-ly, gov-ern-ment. Spotting the root makes the rest easier to predict." }
+];
+
+const PATTERN_TIPS = {
+  double: { name: "Watch double letters", body: "Words like accommodate and embarrass double a consonant where it's easy to assume there's only one. When you learn a new word, check specifically whether any letter repeats." },
+  silent: { name: "Watch for silent letters", body: "Knowledge, rhythm and similar words hide a letter you don't actually hear when the word is spoken aloud. Spelling these by sound alone will trip you up — they need to be memorised visually." },
+  ie_ei: { name: "The ie / ei pattern", body: "\"i before e, except after c\" is a useful starting rule, but it has real exceptions (weird, foreign). Treat it as a first guess, then learn the exceptions individually as you meet them." },
+  long: { name: "Chunk long words", body: "Words like questionnaire or pharmaceutical feel harder mainly because of length. Break them into smaller parts before attempting to spell the whole thing." },
+  suffix: { name: "Check the ending", body: "Endings such as -ence/-ance or -able/-ible are commonly mixed up because they sound almost identical. There's no single rule — these are best learned word by word." }
+};
+
+function detectPatterns(words){
+  const patterns = new Set();
+  words.forEach(w => {
+    const lw = w.toLowerCase();
+    if(/(.)\1/.test(lw)) patterns.add('double');
+    if(/kn|gh|mb|mn|wr|ps|gn/.test(lw)) patterns.add('silent');
+    if(/ie|ei/.test(lw)) patterns.add('ie_ei');
+    if(lw.length >= 10) patterns.add('long');
+    if(/(ence|ance|able|ible)$/.test(lw)) patterns.add('suffix');
+  });
+  return patterns;
+}
+
+function renderTips(){
+  els.tipsList.innerHTML = '';
+  const missedWords = (round.mistakes || []).map(m => m.word);
+  const patterns = detectPatterns(missedWords);
+
+  patterns.forEach(key => {
+    const tip = PATTERN_TIPS[key];
+    if(!tip) return;
+    const card = document.createElement('div');
+    card.className = 'tip-card tailored';
+    card.innerHTML = `<p class="tip-eyebrow">Based on this round</p><span class="tip-name">${tip.name}.</span> ${tip.body}`;
+    els.tipsList.appendChild(card);
+  });
+
+  CORE_TIPS.forEach(tip => {
+    const card = document.createElement('div');
+    card.className = 'tip-card';
+    card.innerHTML = `<span class="tip-name">${tip.name}.</span> ${tip.body}`;
+    els.tipsList.appendChild(card);
+  });
+}
+
+// ---------- Share result ----------
+function buildShareText(){
+  const format = TEST_FORMATS[settings.format];
+  const band = computeBand(round.correctCount, round.words.length, format);
+  const levelLabel = settings.level.charAt(0).toUpperCase() + settings.level.slice(1);
+  const modeLabel = settings.mode.charAt(0).toUpperCase() + settings.mode.slice(1);
+  return `${format.label} Spelling Drill — scored ${formatScore(band, settings.format)}/${format.max} (${bandDescriptor(band, format)}), ${round.correctCount}/${round.words.length} correct on ${levelLabel} level, ${modeLabel} mode.`;
+}
+
+async function shareResult(){
+  const text = buildShareText();
+  els.shareStatus.textContent = '';
+  els.shareFallback.classList.add('hidden');
+
+  if(navigator.share){
+    try{
+      await navigator.share({ text, title: `My ${TEST_FORMATS[settings.format].label} Spelling Drill result` });
+      els.shareStatus.textContent = 'Shared.';
+      return;
+    }catch(e){
+      if(e && e.name === 'AbortError') return; // user cancelled, no error needed
+      // fall through to clipboard fallback
+    }
+  }
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    try{
+      await navigator.clipboard.writeText(text);
+      els.shareStatus.textContent = 'Copied to clipboard.';
+      return;
+    }catch(e){ /* fall through */ }
+  }
+
+  // Last resort: show selectable text
+  els.shareTextArea.value = text;
+  els.shareFallback.classList.remove('hidden');
+  els.shareTextArea.focus();
+  els.shareTextArea.select();
+  els.shareStatus.textContent = 'Copy the text below.';
+}
+
+els.shareBtn.addEventListener('click', shareResult);
+
+
+function endRound(){
+  clearInterval(timerHandle);
+  showScreen('result');
+  els.shareStatus.textContent = '';
+  els.shareFallback.classList.add('hidden');
+
+  const format = TEST_FORMATS[settings.format];
+  const band = computeBand(round.correctCount, round.words.length, format);
+  const range = format.max - format.min;
+  const accuracy = Math.round((round.correctCount/round.words.length)*100);
+
+  els.resultEyebrow.textContent = `${format.label} score report`;
+  els.bandScore.innerHTML = `${formatScore(band, settings.format)} <span id="band-max">/ ${format.max}</span>`;
+  els.bandDescriptor.textContent = bandDescriptor(band, format);
+  els.bandMarker.style.left = `${((band - format.min) / range) * 100}%`;
+
+  els.bandScale.innerHTML = '';
+  [0, 0.25, 0.5, 0.75, 1].forEach(f => {
+    const span = document.createElement('span');
+    span.textContent = formatScore(format.min + f * range, settings.format);
+    els.bandScale.appendChild(span);
+  });
+
+  els.statCorrect.textContent = `${round.correctCount}/${round.words.length}`;
+  els.statAccuracy.textContent = `${accuracy}%`;
+
+  els.reviewList.innerHTML = '';
+  if(!round.mistakes || round.mistakes.length === 0){
+    els.reviewList.innerHTML = '<p class="no-mistakes">Perfect round — no mistakes to review.</p>';
+  } else {
+    round.mistakes.forEach(m => {
+      const row = document.createElement('div');
+      row.className = 'review-item';
+      row.innerHTML = `<span class="review-wrong">${m.attempt}</span><span class="review-correct">${m.word}</span>`;
+      els.reviewList.appendChild(row);
+    });
+  }
+
+  renderTips();
+  saveHistoryEntry({
+    date: new Date().toISOString(),
+    format: settings.format,
+    formatLabel: format.label,
+    level: settings.level,
+    mode: settings.mode,
+    band, max: format.max,
+    correct: round.correctCount,
+    total: round.words.length,
+    accuracy
+  });
+}
+
+els.retryBtn.addEventListener('click', () => startRound());
+els.settingsBtn.addEventListener('click', () => showScreen('home'));
+
+// ---------- History & progress storage ----------
+const HISTORY_KEY = 'spelling-history';
+
+async function loadHistory(){
+  try{
+    const res = await window.storage.get(HISTORY_KEY, false);
+    return res && res.value ? JSON.parse(res.value) : [];
+  }catch(e){
+    return [];
+  }
+}
+
+async function saveHistoryEntry(entry){
+  try{
+    const history = await loadHistory();
+    history.push(entry);
+    while(history.length > 200) history.shift();
+    await window.storage.set(HISTORY_KEY, JSON.stringify(history), false);
+  }catch(e){
+    console.error('Could not save history', e);
+  }
+}
+
+function calcStreak(history){
+  if(!history.length) return 0;
+  const days = new Set(history.map(h => new Date(h.date).toDateString()));
+  const cursor = new Date();
+  if(!days.has(cursor.toDateString())) cursor.setDate(cursor.getDate() - 1);
+  let streak = 0;
+  while(days.has(cursor.toDateString())){
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
+function buildChartSVG(entries){
+  const w = 300, h = 110, pad = 8;
+  if(entries.length < 2){
+    const pt = entries[0];
+    const cx = w/2, cy = h - pad - ((pt ? pt.accuracy : 0)/100)*(h-2*pad);
+    return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:110px;">
+      <line x1="0" y1="${h-pad}" x2="${w}" y2="${h-pad}" stroke="var(--rule)" stroke-width="1"/>
+      ${pt ? `<circle cx="${cx}" cy="${cy}" r="4" fill="var(--chalk-blue)"/>` : ''}
+    </svg>`;
+  }
+  const stepX = (w - 2*pad) / (entries.length - 1);
+  const points = entries.map((e,i) => {
+    const x = pad + i*stepX;
+    const y = h - pad - (e.accuracy/100)*(h-2*pad);
+    return {x,y,e};
+  });
+  const linePath = points.map((p,i) => (i===0?'M':'L') + p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' ');
+  const areaPath = linePath + ` L${points[points.length-1].x.toFixed(1)},${h-pad} L${points[0].x.toFixed(1)},${h-pad} Z`;
+  const dots = points.map(p => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="var(--chalk-blue)"/>`).join('');
+  const gridLines = [0,25,50,75,100].map(v => {
+    const y = h - pad - (v/100)*(h-2*pad);
+    return `<line x1="${pad}" y1="${y.toFixed(1)}" x2="${w-pad}" y2="${y.toFixed(1)}" stroke="var(--rule)" stroke-width="1" stroke-dasharray="2,3"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:110px;">
+    ${gridLines}
+    <path d="${areaPath}" fill="var(--chalk-blue)" opacity="0.08"/>
+    <path d="${linePath}" fill="none" stroke="var(--chalk-blue)" stroke-width="2"/>
+    ${dots}
+  </svg>`;
+}
+
+async function renderHistoryScreen(){
+  els.historyLoading.classList.remove('hidden');
+  els.historyContent.classList.add('hidden');
+  els.historyEmpty.classList.add('hidden');
+
+  const history = await loadHistory();
+
+  els.historyLoading.classList.add('hidden');
+  if(!history.length){
+    els.historyEmpty.classList.remove('hidden');
+    return;
+  }
+  els.historyContent.classList.remove('hidden');
+
+  els.histSessions.textContent = history.length;
+  els.histBest.textContent = `${Math.max(...history.map(h => h.accuracy))}%`;
+  els.histStreak.textContent = calcStreak(history);
+
+  const recent = history.slice(-20);
+  els.historyChart.innerHTML = buildChartSVG(recent);
+
+  els.sessionList.innerHTML = '';
+  history.slice(-8).reverse().forEach(h => {
+    const row = document.createElement('div');
+    row.className = 'session-item';
+    const d = new Date(h.date);
+    const dateLabel = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    row.innerHTML = `<span>${h.formatLabel || 'Drill'}<br><span class="session-meta">${dateLabel} · ${h.level} · ${h.mode}</span></span><span class="session-score">${formatScore(h.band, h.format)}/${h.max} · ${h.accuracy}%</span>`;
+    els.sessionList.appendChild(row);
+  });
+}
+
+els.clearHistoryBtn.addEventListener('click', async () => {
+  if(!confirm('Clear all saved progress history? This cannot be undone.')) return;
+  try{
+    await window.storage.delete(HISTORY_KEY, false);
+  }catch(e){ /* ignore */ }
+  renderHistoryScreen();
+});
+
+// ---------- Custom word list ----------
+const CUSTOM_WORDS_KEY = 'custom-words';
+let customWords = [];
+
+async function loadCustomWords(){
+  try{
+    const res = await window.storage.get(CUSTOM_WORDS_KEY, false);
+    customWords = res && res.value ? JSON.parse(res.value) : [];
+  }catch(e){
+    customWords = [];
+  }
+}
+
+async function saveCustomWords(){
+  try{
+    await window.storage.set(CUSTOM_WORDS_KEY, JSON.stringify(customWords), false);
+  }catch(e){
+    console.error('Could not save custom words', e);
+  }
+}
+
+function normalizeWord(raw){
+  return (raw || '').trim();
+}
+
+function isValidWord(w){
+  return /^[A-Za-z][A-Za-z'-]*$/.test(w) && w.length <= 30;
+}
+
+function addCustomWord(raw){
+  const w = normalizeWord(raw);
+  if(!w) return { ok:false, reason:'empty' };
+  if(/\s/.test(w)) return { ok:false, reason:'multiword' };
+  if(!isValidWord(w)) return { ok:false, reason:'invalid' };
+  if(customWords.some(existing => existing.toLowerCase() === w.toLowerCase())) return { ok:false, reason:'duplicate' };
+  customWords.push(w);
+  return { ok:true };
+}
+
+const ADD_WORD_MESSAGES = {
+  empty: 'Type a word first.',
+  multiword: 'Add one word at a time — use "Add several" for a list.',
+  invalid: 'Use letters only (hyphens and apostrophes are fine).',
+  duplicate: 'That word is already saved.'
+};
+
+function renderMyWordsList(){
+  els.customWordCount.textContent = customWords.length;
+  els.customWordList.innerHTML = '';
+  if(!customWords.length){
+    els.customEmpty.classList.remove('hidden');
+    return;
+  }
+  els.customEmpty.classList.add('hidden');
+  [...customWords].sort((a,b) => a.localeCompare(b)).forEach(w => {
+    const chip = document.createElement('span');
+    chip.className = 'word-chip';
+    chip.innerHTML = `${escapeHtml(w)} <button aria-label="Remove ${escapeHtml(w)}" data-word="${escapeHtml(w)}">×</button>`;
+    els.customWordList.appendChild(chip);
+  });
+}
+
+els.addWordBtn.addEventListener('click', async () => {
+  const result = addCustomWord(els.customWordInput.value);
+  if(result.ok){
+    els.customWordInput.value = '';
+    els.customWordFeedback.textContent = '';
+    await saveCustomWords();
+    renderMyWordsList();
+    updateLevelHelper();
+  } else {
+    els.customWordFeedback.textContent = ADD_WORD_MESSAGES[result.reason] || 'Could not add that word.';
+  }
+  els.customWordInput.focus();
+});
+
+els.customWordInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){ e.preventDefault(); els.addWordBtn.click(); }
+});
+
+els.bulkAddToggle.addEventListener('click', () => {
+  els.bulkAddArea.classList.toggle('hidden');
+});
+
+els.bulkAddBtn.addEventListener('click', async () => {
+  const tokens = els.bulkWordInput.value.split(/[,;\n]+/).flatMap(t => t.trim().split(/\s+/)).filter(Boolean);
+  let added = 0, skipped = 0;
+  tokens.forEach(t => {
+    const result = addCustomWord(t);
+    if(result.ok) added++; else skipped++;
+  });
+  els.bulkWordInput.value = '';
+  await saveCustomWords();
+  renderMyWordsList();
+  updateLevelHelper();
+  els.customWordFeedback.textContent = added
+    ? `Added ${added} word${added===1?'':'s'}${skipped ? `, skipped ${skipped} (duplicate or invalid)` : ''}.`
+    : 'No valid new words found in that list.';
+});
+
+els.customWordList.addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-word]');
+  if(!btn) return;
+  customWords = customWords.filter(w => w !== btn.dataset.word);
+  await saveCustomWords();
+  renderMyWordsList();
+  updateLevelHelper();
+});
+
+els.clearWordsBtn.addEventListener('click', async () => {
+  if(!confirm('Remove all custom words? This cannot be undone.')) return;
+  customWords = [];
+  await saveCustomWords();
+  renderMyWordsList();
+  updateLevelHelper();
+});
+
+loadCustomWords().then(updateLevelHelper);
+
+// ---------- Grammar check ----------
+function diffWords(a, b){
+  const aw = a.trim().split(/\s+/).filter(Boolean);
+  const bw = b.trim().split(/\s+/).filter(Boolean);
+  const n = aw.length, m = bw.length;
+  const dp = Array.from({length:n+1}, () => new Array(m+1).fill(0));
+  for(let i=n-1;i>=0;i--){
+    for(let j=m-1;j>=0;j--){
+      dp[i][j] = aw[i].toLowerCase() === bw[j].toLowerCase() ? dp[i+1][j+1]+1 : Math.max(dp[i+1][j], dp[i][j+1]);
+    }
+  }
+  let i=0, j=0;
+  const result = [];
+  while(i<n && j<m){
+    if(aw[i].toLowerCase() === bw[j].toLowerCase()){ result.push({type:'same', word: bw[j]}); i++; j++; }
+    else if(dp[i+1][j] >= dp[i][j+1]){ result.push({type:'removed', word: aw[i]}); i++; }
+    else { result.push({type:'added', word: bw[j]}); j++; }
+  }
+  while(i<n){ result.push({type:'removed', word: aw[i]}); i++; }
+  while(j<m){ result.push({type:'added', word: bw[j]}); j++; }
+  return result;
+}
+
+function escapeHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderGrammarResult(original, corrected, notes){
+  const diff = diffWords(original, corrected);
+  let hasChange = false;
+  const html = diff.map(part => {
+    const safe = escapeHtml(part.word);
+    if(part.type === 'same') return safe;
+    hasChange = true;
+    if(part.type === 'added') return `<span class="gword-added">${safe}</span>`;
+    return `<span class="gword-removed">${safe}</span>`;
+  }).join(' ');
+
+  els.grammarDiff.innerHTML = html;
+  els.grammarNotes.innerHTML = '';
+  if(!hasChange){
+    els.grammarNotes.innerHTML = '<p class="no-fixes">No grammar issues found — nice work.</p>';
+  } else if(notes && notes.length){
+    notes.forEach(note => {
+      const card = document.createElement('div');
+      card.className = 'tip-card';
+      card.textContent = note;
+      els.grammarNotes.appendChild(card);
+    });
+  }
+  els.grammarResult.classList.remove('hidden');
+}
+
+async function checkGrammar(){
+  const text = els.grammarInput.value.trim();
+  if(!text) return;
+
+  els.grammarCheckBtn.disabled = true;
+  els.grammarLoading.classList.remove('hidden');
+  els.grammarResult.classList.add('hidden');
+  els.grammarError.classList.add('hidden');
+
+  try{
+    const prompt = `You are a precise English grammar checker helping a candidate preparing for IELTS or PTE Academic. Correct any grammar, punctuation, article, preposition, verb-tense or subject-verb-agreement errors in the text below while keeping the author's original meaning, wording and vocabulary level wherever possible. Respond with ONLY a JSON object and nothing else (no preamble, no markdown fences), in exactly this shape: {"corrected": "the fully corrected text", "notes": ["short note about one fix", "short note about another fix"]}. List at most 5 short notes (each under 18 words) describing the most important fixes, in the order they appear. If there are no errors, set "corrected" to the original text and "notes" to an empty array.
+
+Text:
+"""${text}"""`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if(!response.ok) throw new Error('Request failed');
+    const data = await response.json();
+    const textBlocks = data.content.filter(b => b.type === 'text').map(b => b.text).join('\n');
+    const clean = textBlocks.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    renderGrammarResult(text, parsed.corrected || text, parsed.notes || []);
+  }catch(e){
+    els.grammarError.classList.remove('hidden');
+  }finally{
+    els.grammarCheckBtn.disabled = false;
+    els.grammarLoading.classList.add('hidden');
+  }
+}
+
+els.grammarCheckBtn.addEventListener('click', checkGrammar);
+</script>
+</body>
+</html>
