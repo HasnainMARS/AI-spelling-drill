@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hasnainmars.github.io/AI-spelling-drill/sitemap.xml
