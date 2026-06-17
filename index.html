@@ -812,6 +812,44 @@ body{
   margin:0 0 16px;
 }
 
+/* ---------- Pitch Analyzer screen ---------- */
+.pitch-record-zone{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:18px 0 8px;
+}
+.record-btn{
+  width:84px; height:84px;
+  border-radius:50%;
+  background:var(--ink-navy);
+  border:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  transition:background .15s ease, transform .12s ease;
+}
+.record-btn:active{transform:scale(.96);}
+.record-btn.recording{background:var(--red-pen);}
+.record-btn.recording::before{
+  content:"";
+  position:absolute;
+  inset:-8px;
+  border-radius:50%;
+  border:2px solid var(--red-pen);
+  animation:pulse 1.1s ease-out infinite;
+}
+.record-icon{width:30px;height:30px;fill:var(--paper);}
+.pitch-status{
+  font-size:13px;
+  color:var(--graphite);
+  opacity:.7;
+  margin:14px 0 4px;
+  text-align:center;
+}
+
 .disclaimer{
   text-align:center;
   font-size:11px;
@@ -852,6 +890,7 @@ body{
       <button class="nav-btn active" data-screen="home">Spelling Drill</button>
       <button class="nav-btn" data-screen="mywords">My Words</button>
       <button class="nav-btn" data-screen="grammar">Grammar Check</button>
+      <button class="nav-btn" data-screen="pitch">Pitch Check</button>
       <button class="nav-btn" data-screen="history">Progress</button>
     </div>
   </div>
@@ -1055,6 +1094,51 @@ body{
       <button class="clear-history-btn" id="clear-words-btn">Clear all custom words</button>
     </div>
 
+    <!-- PITCH ANALYZER SCREEN -->
+    <div id="pitch-screen" class="hidden">
+      <div class="screen-header">
+        <div>
+          <p class="screen-title">Pitch analyzer</p>
+          <p class="screen-subtitle">Record a short sample of your speech and see how your pitch varies — useful for Speaking tasks. Audio is processed on your device and never uploaded.</p>
+        </div>
+        <button class="back-link" data-screen="home">Back</button>
+      </div>
+
+      <div class="pitch-record-zone">
+        <button class="record-btn" id="record-btn" title="Start recording">
+          <svg class="record-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.31 2.69 6.3 6 6.92V21h2v-3.08c3.31-.62 6-3.61 6-6.92h-2z"/></svg>
+        </button>
+        <p class="pitch-status" id="pitch-status">Tap to start recording (up to 20s)</p>
+        <div class="timer-track hidden" id="pitch-timer-track"><div class="timer-fill" id="pitch-timer-fill"></div></div>
+      </div>
+
+      <div class="grammar-error hidden" id="pitch-error"></div>
+
+      <div class="pitch-results hidden" id="pitch-results">
+        <div class="chart-wrap">
+          <p class="chart-caption">Pitch over time (Hz)</p>
+          <div id="pitch-chart"></div>
+        </div>
+
+        <div class="progress-stat-row">
+          <div class="stat-box"><div class="stat-num" id="pitch-avg">—</div><div class="stat-label">Average pitch</div></div>
+          <div class="stat-box"><div class="stat-num" id="pitch-range">—</div><div class="stat-label">Pitch variation</div></div>
+          <div class="stat-box"><div class="stat-num" id="pitch-voiced">—</div><div class="stat-label">Speaking time</div></div>
+        </div>
+
+        <p class="grammar-block-label">Remarks</p>
+        <div class="grammar-diff" id="pitch-remarks"></div>
+
+        <div class="tips-section" style="margin-top:18px;padding-top:0;border-top:none;">
+          <p class="tips-title">Tips to improve your intonation</p>
+          <p class="tips-subtitle">Worth building into how you practice Speaking tasks.</p>
+          <div id="pitch-tips"></div>
+        </div>
+
+        <button class="start-btn" id="pitch-retry-btn">Record again</button>
+      </div>
+    </div>
+
   </div>
 
   <p class="disclaimer">Independent practice tool inspired by listening-and-spelling tasks used in tests like PTE Academic, PTE Academic UKVI, PTE Core and IELTS. Not affiliated with or endorsed by Pearson, IDP, the British Council, or Cambridge Assessment English.</p>
@@ -1182,6 +1266,20 @@ const els = {
   customWordList: document.getElementById('custom-word-list'),
   customEmpty: document.getElementById('custom-empty'),
   clearWordsBtn: document.getElementById('clear-words-btn'),
+  pitchScreen: document.getElementById('pitch-screen'),
+  recordBtn: document.getElementById('record-btn'),
+  pitchStatus: document.getElementById('pitch-status'),
+  pitchTimerTrack: document.getElementById('pitch-timer-track'),
+  pitchTimerFill: document.getElementById('pitch-timer-fill'),
+  pitchError: document.getElementById('pitch-error'),
+  pitchResults: document.getElementById('pitch-results'),
+  pitchChart: document.getElementById('pitch-chart'),
+  pitchAvg: document.getElementById('pitch-avg'),
+  pitchRange: document.getElementById('pitch-range'),
+  pitchVoiced: document.getElementById('pitch-voiced'),
+  pitchRemarks: document.getElementById('pitch-remarks'),
+  pitchTips: document.getElementById('pitch-tips'),
+  pitchRetryBtn: document.getElementById('pitch-retry-btn'),
 };
 
 function shuffle(arr){
@@ -1301,12 +1399,16 @@ els.startBtn.addEventListener('click', () => startRound());
 
 // ---------- Top-level screen navigation ----------
 function showScreen(name){
+  if(name !== 'pitch' && pitchAudioContext){
+    stopPitchRecording();
+  }
   els.setupScreen.classList.add('hidden');
   els.gameScreen.classList.add('hidden');
   els.resultScreen.classList.add('hidden');
   els.historyScreen.classList.add('hidden');
   els.grammarScreen.classList.add('hidden');
   els.mywordsScreen.classList.add('hidden');
+  els.pitchScreen.classList.add('hidden');
   els.navRow.classList.remove('hidden');
 
   if(name === 'home') els.setupScreen.classList.remove('hidden');
@@ -1315,6 +1417,7 @@ function showScreen(name){
   else if(name === 'history'){ els.historyScreen.classList.remove('hidden'); renderHistoryScreen(); }
   else if(name === 'grammar') els.grammarScreen.classList.remove('hidden');
   else if(name === 'mywords'){ els.mywordsScreen.classList.remove('hidden'); renderMyWordsList(); }
+  else if(name === 'pitch') els.pitchScreen.classList.remove('hidden');
 
   const homeGroup = ['home','game','result'];
   els.navBtns.forEach(b => b.classList.toggle('active', b.dataset.screen === name || (homeGroup.includes(name) && b.dataset.screen === 'home')));
@@ -2011,6 +2114,246 @@ Text:
 }
 
 els.grammarCheckBtn.addEventListener('click', checkGrammar);
+
+// ---------- Pitch analyzer ----------
+const PITCH_MAX_MS = 20000;
+const MIN_VOICE_HZ = 70;
+const MAX_VOICE_HZ = 500;
+
+let pitchAudioContext = null;
+let pitchStream = null;
+let pitchSource = null;
+let pitchProcessor = null;
+let pitchSamples = [];
+let pitchStartTime = 0;
+let pitchFrameCount = 0;
+let pitchVoicedCount = 0;
+let pitchTimerHandle = null;
+
+function detectPitch(buf, sampleRate){
+  const n = buf.length;
+  let rms = 0;
+  for(let i=0;i<n;i++) rms += buf[i]*buf[i];
+  rms = Math.sqrt(rms/n);
+  if(rms < 0.012) return null; // too quiet — treat as silence
+
+  const minLag = Math.floor(sampleRate / MAX_VOICE_HZ);
+  const maxLag = Math.min(n - 1, Math.ceil(sampleRate / MIN_VOICE_HZ));
+
+  let bestLag = -1, bestCorr = 0;
+  for(let lag = minLag; lag <= maxLag; lag++){
+    let corr = 0;
+    for(let i=0; i < n - lag; i++){
+      corr += buf[i] * buf[i+lag];
+    }
+    if(corr > bestCorr){ bestCorr = corr; bestLag = lag; }
+  }
+  if(bestLag <= 0) return null;
+
+  let energy = 0;
+  for(let i=0; i < n - bestLag; i++) energy += buf[i]*buf[i];
+  const normalizedCorr = bestCorr / (energy + 1e-9);
+  if(normalizedCorr < 0.35) return null; // not periodic enough — likely unvoiced/noise
+
+  return sampleRate / bestLag;
+}
+
+function beginPitchTimerUI(){
+  els.pitchTimerTrack.classList.remove('hidden');
+  els.pitchTimerFill.style.transition = 'none';
+  els.pitchTimerFill.style.width = '100%';
+  requestAnimationFrame(() => {
+    els.pitchTimerFill.style.transition = `width ${PITCH_MAX_MS/1000}s linear`;
+    els.pitchTimerFill.style.width = '0%';
+  });
+  let remainingMs = PITCH_MAX_MS;
+  clearInterval(pitchTimerHandle);
+  pitchTimerHandle = setInterval(() => {
+    remainingMs -= 200;
+    if(remainingMs <= 0) stopPitchRecording();
+  }, 200);
+}
+
+async function startPitchRecording(){
+  els.pitchError.classList.add('hidden');
+  els.pitchResults.classList.add('hidden');
+  pitchSamples = [];
+  pitchFrameCount = 0;
+  pitchVoicedCount = 0;
+
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    els.pitchError.textContent = "Microphone access isn't available in this browser or environment.";
+    els.pitchError.classList.remove('hidden');
+    return;
+  }
+
+  try{
+    pitchStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  }catch(e){
+    els.pitchError.textContent = "Couldn't access your microphone. Please allow microphone permission and try again.";
+    els.pitchError.classList.remove('hidden');
+    return;
+  }
+
+  try{
+    pitchAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+    pitchSource = pitchAudioContext.createMediaStreamSource(pitchStream);
+    pitchProcessor = pitchAudioContext.createScriptProcessor(2048, 1, 1);
+    pitchStartTime = pitchAudioContext.currentTime;
+
+    pitchProcessor.onaudioprocess = (e) => {
+      pitchFrameCount++;
+      const data = e.inputBuffer.getChannelData(0);
+      const freq = detectPitch(data, pitchAudioContext.sampleRate);
+      if(freq && freq > MIN_VOICE_HZ && freq < MAX_VOICE_HZ){
+        pitchVoicedCount++;
+        const t = (pitchAudioContext.currentTime - pitchStartTime) * 1000;
+        pitchSamples.push({ t, f: freq });
+      }
+    };
+
+    const silentGain = pitchAudioContext.createGain();
+    silentGain.gain.value = 0;
+    pitchSource.connect(pitchProcessor);
+    pitchProcessor.connect(silentGain);
+    silentGain.connect(pitchAudioContext.destination);
+  }catch(e){
+    els.pitchError.textContent = "Couldn't start audio analysis in this browser.";
+    els.pitchError.classList.remove('hidden');
+    pitchStream.getTracks().forEach(t => t.stop());
+    pitchAudioContext = null;
+    return;
+  }
+
+  els.recordBtn.classList.add('recording');
+  els.pitchStatus.textContent = 'Recording… tap to stop';
+  beginPitchTimerUI();
+}
+
+function stopPitchRecording(){
+  clearInterval(pitchTimerHandle);
+  if(pitchProcessor){ pitchProcessor.disconnect(); pitchProcessor.onaudioprocess = null; }
+  if(pitchSource){ try{ pitchSource.disconnect(); }catch(e){} }
+  if(pitchStream){ pitchStream.getTracks().forEach(t => t.stop()); }
+  if(pitchAudioContext){ try{ pitchAudioContext.close(); }catch(e){} }
+  pitchAudioContext = null;
+  pitchProcessor = null;
+  pitchSource = null;
+  pitchStream = null;
+
+  els.recordBtn.classList.remove('recording');
+  els.pitchStatus.textContent = 'Tap to record again';
+  els.pitchTimerTrack.classList.add('hidden');
+
+  renderPitchResults();
+}
+
+function computePitchStats(){
+  if(!pitchSamples.length) return null;
+  const freqs = pitchSamples.map(s => s.f).slice().sort((a,b) => a-b);
+  const p10 = freqs[Math.max(0, Math.floor(freqs.length*0.1))];
+  const p90 = freqs[Math.min(freqs.length-1, Math.floor(freqs.length*0.9))];
+  const avg = freqs.reduce((a,b) => a+b, 0) / freqs.length;
+  const semitoneRange = p10 > 0 ? 12 * Math.log2(p90/p10) : 0;
+  const voicedRatio = pitchFrameCount ? pitchVoicedCount / pitchFrameCount : 0;
+  return { avg, semitoneRange, voicedRatio };
+}
+
+function buildPitchChartSVG(samples){
+  const w = 300, h = 120, pad = 10;
+  if(!samples.length){
+    return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:120px;"><text x="${w/2}" y="${h/2}" text-anchor="middle" font-size="11" fill="var(--graphite)" opacity="0.5">No voiced speech detected</text></svg>`;
+  }
+  const freqs = samples.map(s => s.f);
+  const minF = Math.max(40, Math.min(...freqs) - 15);
+  const maxF = Math.max(...freqs) + 15;
+  const duration = samples[samples.length-1].t || 1;
+  const gapThreshold = 220; // ms gap between voiced frames treated as a pause
+
+  let path = '';
+  let prevT = null;
+  samples.forEach(s => {
+    const x = pad + (s.t/duration) * (w - 2*pad);
+    const y = pad + (1 - (s.f - minF)/(maxF - minF)) * (h - 2*pad);
+    path += (prevT === null || (s.t - prevT) > gapThreshold ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+    prevT = s.t;
+  });
+
+  const gridLines = [0, 0.5, 1].map(f => {
+    const y = pad + f * (h - 2*pad);
+    return `<line x1="${pad}" y1="${y.toFixed(1)}" x2="${w-pad}" y2="${y.toFixed(1)}" stroke="var(--rule)" stroke-width="1" stroke-dasharray="2,3"/>`;
+  }).join('');
+
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:120px;">
+    ${gridLines}
+    <path d="${path}" fill="none" stroke="var(--chalk-blue)" stroke-width="2" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function generatePitchRemarks(stats){
+  const remarks = [];
+  if(stats.semitoneRange < 3){
+    remarks.push('Your pitch stayed quite flat across this recording — that can sound monotone to a listener, even if the content itself is strong.');
+  } else if(stats.semitoneRange < 7){
+    remarks.push("There's some pitch movement here, but it leans flat. A bit more variation would help your speech sound more engaged.");
+  } else if(stats.semitoneRange <= 14){
+    remarks.push('Good natural pitch variation — your intonation moves enough to sound engaged rather than flat.');
+  } else {
+    remarks.push('Your pitch varied quite widely. That can sound expressive, but double check it still felt controlled rather than erratic.');
+  }
+
+  if(stats.voicedRatio < 0.4){
+    remarks.push('A large part of this recording was silence or pauses — try to keep your speech flowing more continuously.');
+  } else if(stats.voicedRatio > 0.85){
+    remarks.push("You spoke almost continuously with very few pauses — good flow, just make sure you're still leaving natural breaks at punctuation.");
+  }
+
+  return remarks;
+}
+
+const PITCH_TIPS = [
+  { name: 'Mark your stress points', body: 'Before speaking, decide which words in a sentence carry the most meaning, and consciously raise or lower your pitch on them.' },
+  { name: 'Exaggerate in practice', body: 'Read a paragraph aloud with deliberately exaggerated pitch swings, then dial it back to a natural level — this trains the habit faster than reading normally.' },
+  { name: 'Record and compare', body: "Listening back to your own pitch contour is one of the fastest ways to notice a monotone pattern you can't hear while you're speaking." },
+  { name: 'Read dialogue aloud', body: 'Scripts with back-and-forth conversation naturally pull your pitch around more than reading plain text, which makes for good practice material.' },
+  { name: 'Support your breath', body: 'Shallow breathing flattens pitch range over a sentence — breathing from the diaphragm gives you more room to vary your pitch.' }
+];
+
+function renderPitchResults(){
+  const stats = computePitchStats();
+  if(!stats){
+    els.pitchError.textContent = 'No clear speech was detected — try speaking a little louder or closer to the microphone.';
+    els.pitchError.classList.remove('hidden');
+    return;
+  }
+
+  els.pitchResults.classList.remove('hidden');
+  els.pitchChart.innerHTML = buildPitchChartSVG(pitchSamples);
+  els.pitchAvg.textContent = `${Math.round(stats.avg)} Hz`;
+  els.pitchRange.textContent = `${stats.semitoneRange.toFixed(1)} st`;
+  els.pitchVoiced.textContent = `${Math.round(stats.voicedRatio*100)}%`;
+
+  els.pitchRemarks.innerHTML = generatePitchRemarks(stats).map(r => `<p style="margin:0 0 8px;">${escapeHtml(r)}</p>`).join('');
+
+  els.pitchTips.innerHTML = '';
+  PITCH_TIPS.forEach(tip => {
+    const card = document.createElement('div');
+    card.className = 'tip-card';
+    card.innerHTML = `<span class="tip-name">${tip.name}.</span> ${tip.body}`;
+    els.pitchTips.appendChild(card);
+  });
+}
+
+els.recordBtn.addEventListener('click', () => {
+  if(els.recordBtn.classList.contains('recording')) stopPitchRecording();
+  else startPitchRecording();
+});
+
+els.pitchRetryBtn.addEventListener('click', () => {
+  els.pitchResults.classList.add('hidden');
+  els.pitchError.classList.add('hidden');
+  els.pitchStatus.textContent = 'Tap to start recording (up to 20s)';
+});
 </script>
 </body>
 </html>
