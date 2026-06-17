@@ -2140,22 +2140,42 @@ function detectPitch(buf, sampleRate){
   const minLag = Math.floor(sampleRate / MAX_VOICE_HZ);
   const maxLag = Math.min(n - 1, Math.ceil(sampleRate / MIN_VOICE_HZ));
 
-  let bestLag = -1, bestCorr = 0;
+  let bestScore = 0;
+  const scores = [];
   for(let lag = minLag; lag <= maxLag; lag++){
-    let corr = 0;
-    for(let i=0; i < n - lag; i++){
-      corr += buf[i] * buf[i+lag];
+    const limit = n - lag;
+    let cross = 0, energyA = 0, energyB = 0;
+    for(let i=0; i < limit; i++){
+      const a = buf[i], b = buf[i+lag];
+      cross += a*b;
+      energyA += a*a;
+      energyB += b*b;
     }
-    if(corr > bestCorr){ bestCorr = corr; bestLag = lag; }
+    // normalized cross-correlation (-1..1) — independent of how many samples
+    // overlap at this lag, so shorter lags aren't unfairly favored
+    const score = cross / (Math.sqrt(energyA*energyB) + 1e-9);
+    scores.push(score);
+    if(score > bestScore) bestScore = score;
   }
-  if(bestLag <= 0) return null;
+  if(bestScore < 0.4) return null; // not periodic enough — likely unvoiced/noise
 
-  let energy = 0;
-  for(let i=0; i < n - bestLag; i++) energy += buf[i]*buf[i];
-  const normalizedCorr = bestCorr / (energy + 1e-9);
-  if(normalizedCorr < 0.35) return null; // not periodic enough — likely unvoiced/noise
+  // Pick the first prominent local peak in the score curve rather than the
+  // single highest score. This lands on the true fundamental period instead
+  // of a harmonic (an integer multiple of the period, which also correlates
+  // strongly) or a point still ramping up toward the real peak.
+  const minAcceptable = bestScore * 0.9;
+  let chosenLag = -1;
+  for(let i=0; i<scores.length; i++){
+    const left = i>0 ? scores[i-1] : -Infinity;
+    const right = i<scores.length-1 ? scores[i+1] : -Infinity;
+    if(scores[i] >= minAcceptable && scores[i] >= left && scores[i] >= right){
+      chosenLag = minLag + i;
+      break;
+    }
+  }
+  if(chosenLag <= 0) return null;
 
-  return sampleRate / bestLag;
+  return sampleRate / chosenLag;
 }
 
 function beginPitchTimerUI(){
