@@ -1,40 +1,82 @@
 # AI Spelling Drill
 
-A browser-based spelling and grammar practice tool for **IELTS**, **PTE Academic**, **PTE Academic UKVI**, and **PTE Core** test preparation. Single static HTML file, no build step, no dependencies — open it directly or host it anywhere.
+![AI Spelling Drill](og-image.png)
 
-## Features
+**A free, browser-based practice suite for IELTS, PTE Academic, PTE Academic UKVI, and PTE Core — spelling dictation, an AI grammar checker, a voice pitch analyzer, and progress tracking, all in a single static page with no backend required.**
 
-- **Audio dictation drill** — hear a word read aloud (via the browser's built-in text-to-speech) and type what you heard, similar to the listening/dictation tasks on these tests.
-- **Test format selector** — choose PTE Academic, PTE Academic UKVI, PTE Core, or IELTS, and your results are scored on that test's actual scale (10–90 scaled score, or 1–9 IELTS-style bands).
-- **Practice and Exam modes** — Practice allows replays and hints; Exam plays the word once with a countdown timer, closer to real test conditions.
-- **Voice accent picker** — Default, American, British, or Australian, since real listening sections use multiple native-English accents.
-- **Custom word lists** — add your own words one at a time or in bulk, then drill yourself on just that list.
-- **Progress tracking** — every round is saved with a chart of accuracy over time, a day streak, best score, and a session history.
-- **AI grammar checker** — paste a sentence or short paragraph and get a corrected version with a tracked-change-style diff and short notes on what was fixed.
-- **Share results** — share your score via the native share sheet or clipboard.
+[![Live Demo](https://img.shields.io/badge/demo-live-2E7D5B)](https://hasnainmars.github.io/AI-spelling-drill/) ![No build step](https://img.shields.io/badge/build-none-5B7FA6) ![Single file](https://img.shields.io/badge/dependencies-none-14213D)
 
-## Hosting
+**[→ Try it live](https://hasnainmars.github.io/AI-spelling-drill/)**
 
-This is a single `index.html` file with everything (HTML, CSS, JS) inlined. To deploy:
+---
 
-1. Upload `index.html` to a static host — GitHub Pages, Netlify, Vercel, and Cloudflare Pages all have free tiers that work well for this.
-2. No build step or server is required.
+## What it does
 
-## Data storage
+This started as a simple audio spelling drill and grew into a small test-prep toolkit. There's no server, no database, no build pipeline — it's one HTML file that runs entirely in the visitor's browser, using the browser's own text-to-speech, microphone, and local storage.
 
-Your custom word list and progress history are saved in your own browser's local storage. That means your data is personal to whichever browser/device you're using — it isn't sent to a server, and it isn't shared with other visitors to the same deployed site.
+### 🔊 Spelling Drill
+Hear a word read aloud and type what you heard, the same way "Write from Dictation" works on these tests.
+- Four test formats — **PTE Academic**, **PTE Academic UKVI**, **PTE Core**, and **IELTS** — each scored on that test's real scale (10–90 scaled score, or 1–9 IELTS-style bands)
+- **Practice mode** (replays + hints) or **Exam mode** (one play, timed, no hints)
+- Four built-in word lists (Foundation / Intermediate / Advanced / Mixed), plus your own **Custom** list
+- A voice accent picker (Default / American / British / Australian), since real listening sections use multiple native-English accents
+- Letter-by-letter diff feedback showing exactly where a misspelling went wrong
+- A "Sharpen your spelling" section with tips tailored to the actual mistakes made that round
+- Share your score via the native share sheet or clipboard
 
-## About the grammar checker
+### ✏️ My Words
+Build a personal word list — add words one at a time or paste a whole batch at once — and drill yourself on just those words by selecting "Custom" as the word list.
 
-The grammar checker calls the Anthropic API to perform the actual correction. This works automatically when the app runs inside Claude.ai's artifact preview. If you self-host this file elsewhere, that feature needs its own backend holding a private API key (an API key should never be placed in client-side code, so one isn't included here). Without a backend in place, the grammar checker will show a friendly "not available right now" message rather than breaking the rest of the app — every other feature works fully standalone.
+### ✅ Grammar Check
+Paste a sentence or short paragraph and get a corrected version back as a tracked-change-style diff, with short notes on what was fixed. This is the one feature that calls out to Claude to do the actual language reasoning — see [Architecture](#architecture--limitations) below.
+
+### 🎙️ Pitch Analyzer
+Record a short speech sample (up to 20 seconds) and see a pitch contour graph of your intonation over time, plus your average pitch, pitch variation, and how much of the recording was actual speech versus pauses — with written remarks and tips aimed at the kind of intonation/fluency assessment used in Speaking tasks. Audio is analyzed locally via the Web Audio API and is never uploaded anywhere.
+
+### 📈 Progress
+Every round you complete is saved automatically: total sessions, best accuracy, a day streak, an accuracy chart over your recent sessions, and a session-by-session history.
+
+---
+
+## Architecture & limitations
+
+This is intentionally a zero-backend app, with one exception:
+
+- **Storage** (custom words, progress history) uses the browser's own `localStorage`, so your data lives on whichever device/browser you're using — it isn't synced across devices or visible to other visitors.
+- **Grammar Check** calls the Anthropic API directly from the browser. This works out of the box when the app runs inside Claude.ai's own environment, where that call is authenticated automatically. If you self-host this file (e.g. on GitHub Pages, as the live demo is), that call has no credentials and will fail gracefully with a "not available right now" message — an API key should never be placed in client-side code, so making this feature work on a self-hosted copy requires routing it through your own backend (a small serverless function holding a private key is the usual approach). Every other feature works fully standalone.
+- **Pitch detection** uses a normalized autocorrelation algorithm tuned for the human voice range (70–500Hz). It's a genuinely working pitch tracker, not a placeholder, but treat its output as a directional practice signal rather than a clinical-grade measurement.
 
 ## Tech stack
 
-Plain HTML, CSS, and JavaScript. No frameworks, no package manager, no build tools.
+Plain HTML, CSS, and JavaScript — no frameworks, no package manager, no build tools. Uses native browser APIs throughout: `SpeechSynthesis` (audio dictation), `Web Audio API` (pitch analysis), `localStorage` (persistence), and the `Web Share API` / clipboard (sharing results).
+
+## Running it yourself
+
+Since it's a single static file, hosting takes one step:
+
+1. Download `index.html` (plus `favicon.svg`, `robots.txt`, `sitemap.xml`, and `og-image.png` if you want the full setup).
+2. Upload it to any static host — GitHub Pages, Netlify, Vercel, and Cloudflare Pages all have free tiers that work well for this.
+3. No build step, no environment variables, no server required.
+
+## Project structure
+
+```
+.
+├── index.html       # the entire application
+├── favicon.svg       # browser tab icon
+├── og-image.png       # social-share preview image
+├── robots.txt       # crawler access + sitemap pointer
+├── sitemap.xml       # single-page sitemap for search engines
+└── README.md       # this file
+```
+
+## Privacy
+
+No analytics, no tracking, no third-party scripts beyond Google Fonts (for typography) and, only when you use Grammar Check, a direct call to Anthropic's API with the text you submit. Recorded audio for the Pitch Analyzer never leaves your device — it's processed in memory and discarded.
 
 ## Disclaimer
 
-This is an independent practice tool inspired by the listening-and-spelling style tasks used in these tests. It is **not affiliated with or endorsed by** Pearson, IDP, the British Council, or Cambridge Assessment English.
+This is an independent practice tool inspired by the listening, spelling, and speaking-style tasks used in these exams. It is **not affiliated with or endorsed by** Pearson, IDP, the British Council, or Cambridge Assessment English.
 
 ## License
 
