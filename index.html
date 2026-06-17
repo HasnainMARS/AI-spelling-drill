@@ -4,6 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Spelling Drill — PTE & IELTS Practice</title>
+
+<meta name="description" content="Free browser-based spelling drill, grammar checker, and pitch analyzer for IELTS, PTE Academic, PTE Academic UKVI, and PTE Core preparation. Practice with audio dictation, build custom word lists, and track your progress over time.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://hasnainmars.github.io/AI-spelling-drill/">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="AI Spelling Drill — PTE & IELTS Practice">
+<meta property="og:description" content="Free spelling drill, grammar checker, and pitch analyzer for IELTS and PTE test preparation, right in your browser.">
+<meta property="og:url" content="https://hasnainmars.github.io/AI-spelling-drill/">
+<meta property="og:image" content="https://hasnainmars.github.io/AI-spelling-drill/og-image.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI Spelling Drill — PTE & IELTS Practice">
+<meta name="twitter:description" content="Free spelling drill, grammar checker, and pitch analyzer for IELTS and PTE test preparation, right in your browser.">
+<meta name="twitter:image" content="https://hasnainmars.github.io/AI-spelling-drill/og-image.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "AI Spelling Drill",
+  "url": "https://hasnainmars.github.io/AI-spelling-drill/",
+  "description": "Free browser-based spelling drill, grammar checker, and pitch analyzer for IELTS, PTE Academic, PTE Academic UKVI, and PTE Core test preparation.",
+  "applicationCategory": "EducationApplication",
+  "operatingSystem": "Any (web browser)",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
 
@@ -850,6 +880,59 @@ body{
   text-align:center;
 }
 
+/* ---------- Synonym practice ---------- */
+.syn-word-display{
+  text-align:center;
+  padding:26px 16px;
+  border:1px solid var(--rule);
+  border-radius:12px;
+  margin-bottom:18px;
+  background:var(--paper);
+}
+.syn-word{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:clamp(26px, 7vw, 32px);
+  color:var(--ink-navy);
+}
+.syn-hear-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:none;
+  border:none;
+  color:var(--chalk-blue);
+  font-size:12.5px;
+  font-weight:500;
+  cursor:pointer;
+  margin-top:8px;
+}
+.syn-hear-btn svg{width:14px;height:14px;fill:var(--chalk-blue);}
+.syn-entry{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+  padding:10px 0;
+  border-bottom:1px solid var(--rule);
+  font-size:13.5px;
+}
+.syn-entry:last-child{border-bottom:none;}
+.syn-entry-word{font-weight:600; color:var(--ink-navy); white-space:nowrap;}
+.syn-entry-list{color:var(--graphite); opacity:.75; margin-left:10px;}
+.syn-entry button{
+  background:none;
+  border:none;
+  color:var(--red-pen);
+  cursor:pointer;
+  font-size:15px;
+  line-height:1;
+  padding:2px 7px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.syn-entry button:hover{background:var(--red-soft);}
+
 .disclaimer{
   text-align:center;
   font-size:11px;
@@ -889,6 +972,7 @@ body{
     <div class="nav-row" id="nav-row">
       <button class="nav-btn active" data-screen="home">Spelling Drill</button>
       <button class="nav-btn" data-screen="mywords">My Words</button>
+      <button class="nav-btn" data-screen="synonyms">Synonyms</button>
       <button class="nav-btn" data-screen="grammar">Grammar Check</button>
       <button class="nav-btn" data-screen="pitch">Pitch Check</button>
       <button class="nav-btn" data-screen="history">Progress</button>
@@ -1013,7 +1097,7 @@ body{
     <div id="history-screen" class="hidden">
       <div class="screen-header">
         <div>
-          <p class="screen-title">Your progress</p>
+          <h2 class="screen-title">Your progress</h2>
           <p class="screen-subtitle">Every drill you complete is saved on this device.</p>
         </div>
         <button class="back-link" data-screen="home">Back</button>
@@ -1046,7 +1130,7 @@ body{
     <div id="grammar-screen" class="hidden">
       <div class="screen-header">
         <div>
-          <p class="screen-title">Grammar check</p>
+          <h2 class="screen-title">Grammar check</h2>
           <p class="screen-subtitle">Paste a sentence or short paragraph to catch grammar mistakes.</p>
         </div>
         <button class="back-link" data-screen="home">Back</button>
@@ -1069,7 +1153,7 @@ body{
     <div id="mywords-screen" class="hidden">
       <div class="screen-header">
         <div>
-          <p class="screen-title">My word list</p>
+          <h2 class="screen-title">My word list</h2>
           <p class="screen-subtitle">Words you add here show up under "Custom" in the spelling drill.</p>
         </div>
         <button class="back-link" data-screen="home">Back</button>
@@ -1098,7 +1182,7 @@ body{
     <div id="pitch-screen" class="hidden">
       <div class="screen-header">
         <div>
-          <p class="screen-title">Pitch analyzer</p>
+          <h2 class="screen-title">Pitch analyzer</h2>
           <p class="screen-subtitle">Record a short sample of your speech and see how your pitch varies — useful for Speaking tasks. Audio is processed on your device and never uploaded.</p>
         </div>
         <button class="back-link" data-screen="home">Back</button>
@@ -1136,6 +1220,110 @@ body{
         </div>
 
         <button class="start-btn" id="pitch-retry-btn">Record again</button>
+      </div>
+    </div>
+
+    <!-- SYNONYM PRACTICE SCREEN -->
+    <div id="synonym-screen" class="hidden">
+      <div class="screen-header">
+        <div>
+          <h2 class="screen-title">Synonym practice</h2>
+          <p class="screen-subtitle">Build your vocabulary range — useful for Speaking and Writing tasks where repeating the same word counts against you.</p>
+        </div>
+        <button class="back-link" data-screen="home">Back</button>
+      </div>
+
+      <!-- Setup + build-your-own sub-view -->
+      <div id="syn-setup-view">
+        <p class="field-label">Level</p>
+        <div class="pill-row" id="syn-level-pills">
+          <button class="pill active" data-level="basic">Basic</button>
+          <button class="pill" data-level="intermediate">Intermediate</button>
+          <button class="pill" data-level="advanced">Advanced</button>
+          <button class="pill" data-level="custom">Custom</button>
+        </div>
+        <p class="helper-text" id="syn-level-helper">Common, everyday words that show up in almost any topic.</p>
+
+        <button class="start-btn" id="syn-start-btn">Start practice — 10 words</button>
+
+        <div style="margin-top:28px;padding-top:20px;border-top:1px dashed var(--rule);">
+          <p class="review-title">Build your own synonym list</p>
+          <div class="add-word-row">
+            <input type="text" id="syn-word-input" placeholder="Word (e.g. happy)" autocomplete="off" autocapitalize="off" spellcheck="false">
+          </div>
+          <div class="add-word-row" style="margin-top:8px;">
+            <input type="text" id="syn-synonyms-input" placeholder="Synonyms, comma separated (e.g. glad, joyful, content)" autocomplete="off" autocapitalize="off" spellcheck="false">
+            <button id="syn-add-btn">Add</button>
+          </div>
+          <p class="inline-feedback" id="syn-add-feedback"></p>
+
+          <p class="review-title" style="margin-top:18px;">Saved entries (<span id="syn-custom-count">0</span>)</p>
+          <div id="syn-custom-list"></div>
+          <div class="empty-state hidden" id="syn-custom-empty">No custom synonym entries yet — add one above.</div>
+
+          <button class="clear-history-btn" id="syn-clear-btn">Clear all custom entries</button>
+        </div>
+      </div>
+
+      <!-- Quiz sub-view -->
+      <div id="syn-quiz-view" class="hidden">
+        <div class="game-top">
+          <span class="q-counter" id="syn-q-counter">Question 1 of 10</span>
+          <span class="score-chip" id="syn-score-chip">Score: 0</span>
+        </div>
+        <div class="dots" id="syn-dots"></div>
+
+        <div class="syn-word-display">
+          <p class="screen-subtitle" style="margin:0 0 4px;">Give a word that means the same as:</p>
+          <div class="syn-word" id="syn-word"></div>
+          <button class="syn-hear-btn" id="syn-hear-btn">
+            <svg viewBox="0 0 24 24"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-.77-3.29-2-4.24v8.48c1.23-.95 2-2.47 2-4.24z"/></svg>
+            Hear word
+          </button>
+        </div>
+
+        <p class="hint-display" id="syn-hint-display"></p>
+
+        <div class="answer-row">
+          <input type="text" class="answer-input" id="syn-answer-input" placeholder="Type a synonym…" autocomplete="off" autocapitalize="off" spellcheck="false">
+          <button class="check-btn" id="syn-check-btn">Check</button>
+        </div>
+
+        <div class="tool-row">
+          <button class="text-btn" id="syn-hint-btn">Show hint</button>
+          <button class="text-btn" id="syn-skip-btn">Skip word</button>
+        </div>
+
+        <div class="feedback" id="syn-feedback">
+          <div id="syn-feedback-text"></div>
+          <button class="next-btn" id="syn-next-btn">Next word →</button>
+        </div>
+      </div>
+
+      <!-- Result sub-view -->
+      <div id="syn-result-view" class="hidden">
+        <p class="result-eyebrow">Synonym practice score</p>
+        <div class="band-score" id="syn-score-display">—</div>
+        <p class="band-descriptor" id="syn-score-descriptor"></p>
+
+        <div class="stat-row">
+          <div class="stat-box"><div class="stat-num" id="syn-stat-correct">0/10</div><div class="stat-label">Correct</div></div>
+          <div class="stat-box"><div class="stat-num" id="syn-stat-accuracy">0%</div><div class="stat-label">Accuracy</div></div>
+        </div>
+
+        <p class="review-title">Review</p>
+        <div id="syn-review-list"></div>
+
+        <div class="result-actions">
+          <button class="btn-retry" id="syn-retry-btn">Try again</button>
+          <button class="btn-settings" id="syn-settings-btn">Change settings</button>
+        </div>
+
+        <div class="tips-section">
+          <p class="tips-title">Grow your vocabulary range</p>
+          <p class="tips-subtitle">A few habits worth building in.</p>
+          <div id="syn-tips-list"></div>
+        </div>
       </div>
     </div>
 
@@ -1280,6 +1468,42 @@ const els = {
   pitchRemarks: document.getElementById('pitch-remarks'),
   pitchTips: document.getElementById('pitch-tips'),
   pitchRetryBtn: document.getElementById('pitch-retry-btn'),
+  synonymScreen: document.getElementById('synonym-screen'),
+  synSetupView: document.getElementById('syn-setup-view'),
+  synQuizView: document.getElementById('syn-quiz-view'),
+  synResultView: document.getElementById('syn-result-view'),
+  synLevelPills: document.querySelectorAll('#syn-level-pills .pill'),
+  synLevelHelper: document.getElementById('syn-level-helper'),
+  synStartBtn: document.getElementById('syn-start-btn'),
+  synWordInput: document.getElementById('syn-word-input'),
+  synSynonymsInput: document.getElementById('syn-synonyms-input'),
+  synAddBtn: document.getElementById('syn-add-btn'),
+  synAddFeedback: document.getElementById('syn-add-feedback'),
+  synCustomCount: document.getElementById('syn-custom-count'),
+  synCustomList: document.getElementById('syn-custom-list'),
+  synCustomEmpty: document.getElementById('syn-custom-empty'),
+  synClearBtn: document.getElementById('syn-clear-btn'),
+  synQCounter: document.getElementById('syn-q-counter'),
+  synScoreChip: document.getElementById('syn-score-chip'),
+  synDots: document.getElementById('syn-dots'),
+  synWord: document.getElementById('syn-word'),
+  synHearBtn: document.getElementById('syn-hear-btn'),
+  synHintDisplay: document.getElementById('syn-hint-display'),
+  synAnswerInput: document.getElementById('syn-answer-input'),
+  synCheckBtn: document.getElementById('syn-check-btn'),
+  synHintBtn: document.getElementById('syn-hint-btn'),
+  synSkipBtn: document.getElementById('syn-skip-btn'),
+  synFeedback: document.getElementById('syn-feedback'),
+  synFeedbackText: document.getElementById('syn-feedback-text'),
+  synNextBtn: document.getElementById('syn-next-btn'),
+  synScoreDisplay: document.getElementById('syn-score-display'),
+  synScoreDescriptor: document.getElementById('syn-score-descriptor'),
+  synStatCorrect: document.getElementById('syn-stat-correct'),
+  synStatAccuracy: document.getElementById('syn-stat-accuracy'),
+  synReviewList: document.getElementById('syn-review-list'),
+  synRetryBtn: document.getElementById('syn-retry-btn'),
+  synSettingsBtn: document.getElementById('syn-settings-btn'),
+  synTipsList: document.getElementById('syn-tips-list'),
 };
 
 function shuffle(arr){
@@ -1409,6 +1633,7 @@ function showScreen(name){
   els.grammarScreen.classList.add('hidden');
   els.mywordsScreen.classList.add('hidden');
   els.pitchScreen.classList.add('hidden');
+  els.synonymScreen.classList.add('hidden');
   els.navRow.classList.remove('hidden');
 
   if(name === 'home') els.setupScreen.classList.remove('hidden');
@@ -1418,6 +1643,7 @@ function showScreen(name){
   else if(name === 'grammar') els.grammarScreen.classList.remove('hidden');
   else if(name === 'mywords'){ els.mywordsScreen.classList.remove('hidden'); renderMyWordsList(); }
   else if(name === 'pitch') els.pitchScreen.classList.remove('hidden');
+  else if(name === 'synonyms'){ els.synonymScreen.classList.remove('hidden'); showSynView('setup'); renderSynCustomList(); updateSynLevelHelper(); }
 
   const homeGroup = ['home','game','result'];
   els.navBtns.forEach(b => b.classList.toggle('active', b.dataset.screen === name || (homeGroup.includes(name) && b.dataset.screen === 'home')));
@@ -2374,6 +2600,393 @@ els.pitchRetryBtn.addEventListener('click', () => {
   els.pitchError.classList.add('hidden');
   els.pitchStatus.textContent = 'Tap to start recording (up to 20s)';
 });
+
+// ---------- Synonym practice ----------
+const SYNONYM_BANKS = {
+  basic: [
+    { word:"good", synonyms:["great","fine","nice","positive","decent"] },
+    { word:"bad", synonyms:["poor","terrible","awful","unpleasant","negative"] },
+    { word:"big", synonyms:["large","huge","enormous","massive"] },
+    { word:"small", synonyms:["little","tiny","minor","compact"] },
+    { word:"happy", synonyms:["glad","joyful","pleased","content"] },
+    { word:"sad", synonyms:["unhappy","upset","sorrowful","down"] },
+    { word:"easy", synonyms:["simple","straightforward","effortless"] },
+    { word:"hard", synonyms:["difficult","tough","challenging"] },
+    { word:"fast", synonyms:["quick","rapid","speedy"] },
+    { word:"slow", synonyms:["sluggish","gradual","unhurried"] },
+    { word:"beautiful", synonyms:["pretty","lovely","attractive","gorgeous"] },
+    { word:"important", synonyms:["significant","essential","vital","crucial"] },
+    { word:"interesting", synonyms:["fascinating","engaging","intriguing"] },
+    { word:"boring", synonyms:["dull","tedious","monotonous"] },
+    { word:"strong", synonyms:["powerful","sturdy","robust"] },
+    { word:"weak", synonyms:["feeble","fragile","frail"] },
+    { word:"new", synonyms:["recent","modern","fresh"] },
+    { word:"old", synonyms:["aged","ancient","outdated"] },
+    { word:"hot", synonyms:["warm","heated","scorching"] },
+    { word:"cold", synonyms:["chilly","freezing","cool"] },
+    { word:"clean", synonyms:["tidy","spotless","neat"] },
+    { word:"rich", synonyms:["wealthy","affluent","well-off"] },
+    { word:"poor", synonyms:["needy","impoverished","broke"] },
+    { word:"true", synonyms:["correct","accurate","genuine"] },
+    { word:"safe", synonyms:["secure","protected","harmless"] }
+  ],
+  intermediate: [
+    { word:"help", synonyms:["assist","support","aid"] },
+    { word:"show", synonyms:["demonstrate","reveal","display"] },
+    { word:"problem", synonyms:["issue","difficulty","obstacle"] },
+    { word:"result", synonyms:["outcome","consequence","effect"] },
+    { word:"reason", synonyms:["cause","motive","justification"] },
+    { word:"method", synonyms:["approach","technique","procedure"] },
+    { word:"idea", synonyms:["concept","notion","thought"] },
+    { word:"opinion", synonyms:["view","perspective","viewpoint"] },
+    { word:"change", synonyms:["alter","modify","transform"] },
+    { word:"improve", synonyms:["enhance","upgrade","refine"] },
+    { word:"create", synonyms:["produce","generate","develop"] },
+    { word:"describe", synonyms:["explain","outline","portray"] },
+    { word:"discuss", synonyms:["debate","examine","analyze"] },
+    { word:"increase", synonyms:["rise","grow","expand"] },
+    { word:"decrease", synonyms:["decline","reduce","drop"] },
+    { word:"allow", synonyms:["permit","enable","authorize"] },
+    { word:"suggest", synonyms:["propose","recommend","advise"] },
+    { word:"decide", synonyms:["determine","resolve","conclude"] },
+    { word:"understand", synonyms:["grasp","comprehend","realize"] },
+    { word:"remember", synonyms:["recall","recollect"] },
+    { word:"continue", synonyms:["proceed","persist","carry on"] },
+    { word:"avoid", synonyms:["prevent","evade","steer clear of"] },
+    { word:"prepare", synonyms:["arrange","organize","get ready"] },
+    { word:"believe", synonyms:["trust","accept","assume"] },
+    { word:"explain", synonyms:["clarify","illustrate","interpret"] }
+  ],
+  advanced: [
+    { word:"ubiquitous", synonyms:["omnipresent","pervasive","widespread"] },
+    { word:"meticulous", synonyms:["thorough","precise","scrupulous"] },
+    { word:"ambiguous", synonyms:["vague","unclear","equivocal"] },
+    { word:"profound", synonyms:["deep","significant","far-reaching"] },
+    { word:"comprehensive", synonyms:["extensive","thorough","all-encompassing"] },
+    { word:"arbitrary", synonyms:["random","capricious","unsystematic"] },
+    { word:"inevitable", synonyms:["unavoidable","certain","inescapable"] },
+    { word:"controversial", synonyms:["contentious","debatable","disputed"] },
+    { word:"substantial", synonyms:["considerable","significant","sizeable"] },
+    { word:"coherent", synonyms:["logical","consistent","organized"] },
+    { word:"redundant", synonyms:["unnecessary","superfluous","excessive"] },
+    { word:"feasible", synonyms:["viable","workable","achievable"] },
+    { word:"rigorous", synonyms:["strict","thorough","stringent"] },
+    { word:"paramount", synonyms:["supreme","foremost","predominant"] },
+    { word:"subsequent", synonyms:["following","ensuing","later"] },
+    { word:"prevalent", synonyms:["widespread","common","dominant"] },
+    { word:"tangible", synonyms:["concrete","palpable","perceptible"] },
+    { word:"inherent", synonyms:["intrinsic","innate","built-in"] },
+    { word:"explicit", synonyms:["clear","direct","unambiguous"] },
+    { word:"detrimental", synonyms:["harmful","damaging","adverse"] },
+    { word:"plausible", synonyms:["believable","credible","reasonable"] },
+    { word:"notable", synonyms:["noteworthy","remarkable","prominent"] },
+    { word:"intricate", synonyms:["complex","elaborate","complicated"] },
+    { word:"versatile", synonyms:["adaptable","flexible","multifaceted"] },
+    { word:"meticulously", synonyms:["precisely","carefully","painstakingly"] }
+  ]
+};
+
+const SYN_ROUND_LENGTH = 10;
+const SYN_CUSTOM_KEY = 'custom-synonyms';
+const SYN_LEVEL_HELPERS = {
+  basic: "Common, everyday words that show up in almost any topic.",
+  intermediate: "A step up — words that add precision without sounding overly formal.",
+  advanced: "Higher-register vocabulary, useful for Writing and academic Speaking tasks."
+};
+
+let synCustomEntries = [];
+let synSettings = { level: 'basic' };
+let synRound = { entries: [], index: 0, correctCount: 0, results: [], mistakes: [] };
+
+async function loadSynCustom(){
+  try{
+    const res = await window.storage.get(SYN_CUSTOM_KEY, false);
+    synCustomEntries = res && res.value ? JSON.parse(res.value) : [];
+  }catch(e){
+    synCustomEntries = [];
+  }
+}
+
+async function saveSynCustom(){
+  try{
+    await window.storage.set(SYN_CUSTOM_KEY, JSON.stringify(synCustomEntries), false);
+  }catch(e){
+    console.error('Could not save custom synonyms', e);
+  }
+}
+
+function addSynEntry(rawWord, rawSynonyms){
+  const word = normalizeWord(rawWord).toLowerCase();
+  const synonymList = rawSynonyms.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+  if(!word) return { ok:false, reason:'no-word' };
+  if(!synonymList.length) return { ok:false, reason:'no-synonyms' };
+  if(synCustomEntries.some(e => e.word.toLowerCase() === word)) return { ok:false, reason:'duplicate' };
+  synCustomEntries.push({ word, synonyms: synonymList });
+  return { ok:true };
+}
+
+const SYN_ADD_MESSAGES = {
+  'no-word': 'Type a word first.',
+  'no-synonyms': 'Add at least one synonym, separated by commas.',
+  'duplicate': 'You already have an entry for that word.'
+};
+
+function renderSynCustomList(){
+  els.synCustomCount.textContent = synCustomEntries.length;
+  els.synCustomList.innerHTML = '';
+  if(!synCustomEntries.length){
+    els.synCustomEmpty.classList.remove('hidden');
+    return;
+  }
+  els.synCustomEmpty.classList.add('hidden');
+  [...synCustomEntries].sort((a,b) => a.word.localeCompare(b.word)).forEach(entry => {
+    const row = document.createElement('div');
+    row.className = 'syn-entry';
+    row.innerHTML = `<span><span class="syn-entry-word">${escapeHtml(entry.word)}</span><span class="syn-entry-list">${escapeHtml(entry.synonyms.join(', '))}</span></span><button aria-label="Remove ${escapeHtml(entry.word)}" data-word="${escapeHtml(entry.word)}">×</button>`;
+    els.synCustomList.appendChild(row);
+  });
+}
+
+els.synAddBtn.addEventListener('click', async () => {
+  const result = addSynEntry(els.synWordInput.value, els.synSynonymsInput.value);
+  if(result.ok){
+    els.synWordInput.value = '';
+    els.synSynonymsInput.value = '';
+    els.synAddFeedback.textContent = '';
+    await saveSynCustom();
+    renderSynCustomList();
+    updateSynLevelHelper();
+  } else {
+    els.synAddFeedback.textContent = SYN_ADD_MESSAGES[result.reason] || 'Could not add that entry.';
+  }
+  els.synWordInput.focus();
+});
+
+els.synCustomList.addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-word]');
+  if(!btn) return;
+  synCustomEntries = synCustomEntries.filter(entry => entry.word !== btn.dataset.word);
+  await saveSynCustom();
+  renderSynCustomList();
+  updateSynLevelHelper();
+});
+
+els.synClearBtn.addEventListener('click', async () => {
+  if(!confirm('Remove all custom synonym entries? This cannot be undone.')) return;
+  synCustomEntries = [];
+  await saveSynCustom();
+  renderSynCustomList();
+  updateSynLevelHelper();
+});
+
+loadSynCustom().then(() => { renderSynCustomList(); updateSynLevelHelper(); });
+
+// ---------- Synonym level selection ----------
+els.synLevelPills.forEach(btn => btn.addEventListener('click', () => {
+  els.synLevelPills.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  synSettings.level = btn.dataset.level;
+  updateSynLevelHelper();
+}));
+
+function updateSynLevelHelper(){
+  if(synSettings.level !== 'custom'){
+    els.synLevelHelper.textContent = SYN_LEVEL_HELPERS[synSettings.level];
+    els.synStartBtn.disabled = false;
+    els.synStartBtn.textContent = `Start practice — ${SYN_ROUND_LENGTH} words`;
+    return;
+  }
+  if(!synCustomEntries.length){
+    els.synLevelHelper.textContent = "You haven't added any custom synonym entries yet — add some below.";
+    els.synStartBtn.disabled = true;
+    els.synStartBtn.textContent = 'Start practice';
+  } else {
+    const size = Math.min(SYN_ROUND_LENGTH, synCustomEntries.length);
+    els.synLevelHelper.textContent = `${synCustomEntries.length} entr${synCustomEntries.length===1?'y':'ies'} saved — this round will use ${size}.`;
+    els.synStartBtn.disabled = false;
+    els.synStartBtn.textContent = `Start practice — ${size} word${size===1?'':'s'}`;
+  }
+}
+
+// ---------- Synonym quiz flow ----------
+function showSynView(view){
+  els.synSetupView.classList.add('hidden');
+  els.synQuizView.classList.add('hidden');
+  els.synResultView.classList.add('hidden');
+  if(view === 'setup') els.synSetupView.classList.remove('hidden');
+  else if(view === 'quiz') els.synQuizView.classList.remove('hidden');
+  else if(view === 'result') els.synResultView.classList.remove('hidden');
+}
+
+function pickSynEntries(level){
+  const pool = level === 'custom' ? synCustomEntries : SYNONYM_BANKS[level];
+  const size = level === 'custom' ? Math.min(SYN_ROUND_LENGTH, pool.length) : SYN_ROUND_LENGTH;
+  return shuffle(pool).slice(0, size);
+}
+
+els.synStartBtn.addEventListener('click', () => {
+  const entries = pickSynEntries(synSettings.level);
+  if(!entries.length) return;
+  synRound = { entries, index: 0, correctCount: 0, results: [], mistakes: [] };
+  showSynView('quiz');
+  buildSynDots();
+  loadSynWord();
+});
+
+function buildSynDots(){
+  els.synDots.innerHTML = '';
+  for(let i=0;i<synRound.entries.length;i++){
+    const d = document.createElement('div');
+    d.className = 'dot';
+    els.synDots.appendChild(d);
+  }
+}
+
+function updateSynDots(){
+  const dotEls = els.synDots.children;
+  for(let i=0;i<dotEls.length;i++){
+    dotEls[i].classList.remove('current','correct','incorrect');
+    if(synRound.results[i] === true) dotEls[i].classList.add('correct');
+    else if(synRound.results[i] === false) dotEls[i].classList.add('incorrect');
+    else if(i === synRound.index) dotEls[i].classList.add('current');
+  }
+}
+
+function currentSynEntry(){ return synRound.entries[synRound.index]; }
+
+function loadSynWord(){
+  const entry = currentSynEntry();
+  els.synQCounter.textContent = `Question ${synRound.index+1} of ${synRound.entries.length}`;
+  els.synScoreChip.textContent = `Score: ${synRound.correctCount}`;
+  updateSynDots();
+  els.synWord.textContent = entry.word;
+  els.synAnswerInput.value = '';
+  els.synAnswerInput.disabled = false;
+  els.synCheckBtn.disabled = false;
+  els.synHintBtn.disabled = false;
+  els.synSkipBtn.disabled = false;
+  els.synHintDisplay.textContent = '';
+  els.synHintDisplay.dataset.stage = '';
+  els.synFeedback.classList.remove('show','correct','incorrect');
+  els.synAnswerInput.focus();
+}
+
+els.synHearBtn.addEventListener('click', () => {
+  const entry = currentSynEntry();
+  if(!entry || !speakAvailable()) return;
+  try{
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(entry.word);
+    utter.rate = 0.85;
+    window.speechSynthesis.speak(utter);
+  }catch(e){ /* silently ignore — text is already shown on screen */ }
+});
+
+els.synHintBtn.addEventListener('click', () => {
+  const entry = currentSynEntry();
+  const stage = els.synHintDisplay.dataset.stage ? parseInt(els.synHintDisplay.dataset.stage) : 0;
+  const next = stage + 1;
+  els.synHintDisplay.dataset.stage = next;
+  if(next === 1){
+    els.synHintDisplay.textContent = `${entry.synonyms.length} possible answer${entry.synonyms.length===1?'':'s'}`;
+  } else {
+    const shortest = [...entry.synonyms].sort((a,b) => a.length-b.length)[0];
+    els.synHintDisplay.textContent = `Starts with "${shortest[0].toUpperCase()}"`;
+    els.synHintBtn.disabled = true;
+  }
+});
+
+els.synSkipBtn.addEventListener('click', () => submitSynAnswer(true));
+els.synCheckBtn.addEventListener('click', () => submitSynAnswer(false));
+els.synAnswerInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') submitSynAnswer(false);
+});
+
+function submitSynAnswer(forced){
+  const entry = currentSynEntry();
+  const userInput = els.synAnswerInput.value.trim();
+  const accepted = entry.synonyms.map(s => s.toLowerCase());
+  const isCorrect = !forced && accepted.includes(userInput.toLowerCase());
+
+  synRound.results[synRound.index] = isCorrect;
+  if(isCorrect) synRound.correctCount++;
+  else synRound.mistakes.push({ word: entry.word, attempt: forced ? (userInput || '(skipped)') : userInput, synonyms: entry.synonyms });
+
+  els.synAnswerInput.disabled = true;
+  els.synCheckBtn.disabled = true;
+  els.synHintBtn.disabled = true;
+  els.synSkipBtn.disabled = true;
+
+  els.synFeedback.classList.add('show', isCorrect ? 'correct' : 'incorrect');
+  if(isCorrect){
+    els.synFeedbackText.innerHTML = `Good — "${escapeHtml(userInput)}" works as a synonym for "${escapeHtml(entry.word)}".`;
+  } else {
+    els.synFeedbackText.innerHTML = `Other words you could use for "${escapeHtml(entry.word)}":<div class="feedback-word" style="font-size:14.5px;">${escapeHtml(entry.synonyms.join(', '))}</div>`;
+  }
+
+  updateSynDots();
+  els.synScoreChip.textContent = `Score: ${synRound.correctCount}`;
+}
+
+els.synNextBtn.addEventListener('click', () => {
+  synRound.index++;
+  if(synRound.index >= synRound.entries.length) endSynRound();
+  else loadSynWord();
+});
+
+const SYNONYM_TIPS = [
+  { name: 'Learn words in small groups', body: 'Studying 3–5 synonyms for one word at a time sticks better than memorizing long, disconnected lists.' },
+  { name: 'Notice the register', body: 'Some synonyms are more formal than others (e.g. "significant" vs "big") — pay attention to which fits the tone you need.' },
+  { name: 'Practice substitution', body: 'Take a sentence you already wrote and try swapping out one word for a synonym, then check it still reads naturally.' },
+  { name: 'Use a thesaurus actively', body: "Don't just look up a word — read a few of the example sentences too, so you see the synonym used in context." },
+  { name: 'Read varied material', body: 'Different sources reach for different words for the same idea — exposure to varied writing builds your range passively.' }
+];
+
+function endSynRound(){
+  showSynView('result');
+  const total = synRound.entries.length;
+  const accuracy = Math.round((synRound.correctCount/total)*100);
+
+  els.synScoreDisplay.textContent = `${synRound.correctCount} / ${total}`;
+  let descriptor = 'Foundation';
+  if(accuracy >= 90) descriptor = 'Excellent range';
+  else if(accuracy >= 70) descriptor = 'Good range';
+  else if(accuracy >= 50) descriptor = 'Developing';
+  els.synScoreDescriptor.textContent = descriptor;
+
+  els.synStatCorrect.textContent = `${synRound.correctCount}/${total}`;
+  els.synStatAccuracy.textContent = `${accuracy}%`;
+
+  els.synReviewList.innerHTML = '';
+  if(!synRound.mistakes.length){
+    els.synReviewList.innerHTML = '<p class="no-mistakes">Perfect round — no mistakes to review.</p>';
+  } else {
+    synRound.mistakes.forEach(m => {
+      const row = document.createElement('div');
+      row.className = 'review-item';
+      row.innerHTML = `<span class="review-wrong">${escapeHtml(m.word)}</span><span class="review-correct" style="font-size:12px;">${escapeHtml(m.synonyms.join(', '))}</span>`;
+      els.synReviewList.appendChild(row);
+    });
+  }
+
+  els.synTipsList.innerHTML = '';
+  SYNONYM_TIPS.forEach(tip => {
+    const card = document.createElement('div');
+    card.className = 'tip-card';
+    card.innerHTML = `<span class="tip-name">${tip.name}.</span> ${tip.body}`;
+    els.synTipsList.appendChild(card);
+  });
+}
+
+els.synRetryBtn.addEventListener('click', () => {
+  const entries = pickSynEntries(synSettings.level);
+  synRound = { entries, index: 0, correctCount: 0, results: [], mistakes: [] };
+  showSynView('quiz');
+  buildSynDots();
+  loadSynWord();
+});
+
+els.synSettingsBtn.addEventListener('click', () => showSynView('setup'));
 </script>
 </body>
 </html>
