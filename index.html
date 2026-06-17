@@ -68,8 +68,20 @@ body{
 }
 
 @media (min-width:700px){
-  body{ padding-top:48px; }
-  .app-shell{ max-width:620px; }
+  body{
+    padding-top:56px;
+    background:
+      radial-gradient(circle at 12% 8%, rgba(91,127,166,0.10), transparent 40%),
+      radial-gradient(circle at 88% 18%, rgba(242,201,76,0.10), transparent 38%),
+      radial-gradient(circle at 50% 100%, rgba(20,33,61,0.05), transparent 50%),
+      var(--paper);
+  }
+  .app-shell{ max-width:700px; }
+}
+
+@media (min-width:1100px){
+  body{ padding-top:72px; }
+  .app-shell{ max-width:880px; }
 }
 
 /* ---------- Header ---------- */
@@ -957,6 +969,19 @@ body{
   .stat-num{ font-size:17px; }
   .play-btn{ width:74px; height:74px; }
   .word-chip button{ padding:5px 9px; }
+}
+
+@media (min-width:1100px){
+  .header-bar{ padding:30px 38px 26px; }
+  .card{ padding:34px 44px 40px; }
+  .eyebrow{ font-size:12.5px; }
+  .headline{ font-size:36px; }
+  .sub{ font-size:14.5px; }
+  .nav-btn{ font-size:13.5px; padding:11px 10px; }
+  .field-label{ font-size:12px; }
+  .pill{ font-size:14.5px; padding:11px 18px; }
+  .answer-input{ font-size:17px; padding:14px 16px; }
+  body{ font-size:16.5px; }
 }
 
 .hidden{display:none !important;}
@@ -2628,7 +2653,17 @@ const SYNONYM_BANKS = {
     { word:"rich", synonyms:["wealthy","affluent","well-off"] },
     { word:"poor", synonyms:["needy","impoverished","broke"] },
     { word:"true", synonyms:["correct","accurate","genuine"] },
-    { word:"safe", synonyms:["secure","protected","harmless"] }
+    { word:"safe", synonyms:["secure","protected","harmless"] },
+    { word:"nice", synonyms:["pleasant","kind","lovely","friendly"] },
+    { word:"bright", synonyms:["shiny","vivid","brilliant","luminous"] },
+    { word:"dark", synonyms:["dim","shadowy","gloomy"] },
+    { word:"quiet", synonyms:["silent","calm","peaceful"] },
+    { word:"loud", synonyms:["noisy","booming","deafening"] },
+    { word:"empty", synonyms:["vacant","hollow","bare"] },
+    { word:"early", synonyms:["prompt","timely","premature"] },
+    { word:"funny", synonyms:["amusing","hilarious","comical"] },
+    { word:"kind", synonyms:["caring","gentle","considerate"] },
+    { word:"brave", synonyms:["courageous","fearless","bold"] }
   ],
   intermediate: [
     { word:"help", synonyms:["assist","support","aid"] },
@@ -2655,7 +2690,17 @@ const SYNONYM_BANKS = {
     { word:"avoid", synonyms:["prevent","evade","steer clear of"] },
     { word:"prepare", synonyms:["arrange","organize","get ready"] },
     { word:"believe", synonyms:["trust","accept","assume"] },
-    { word:"explain", synonyms:["clarify","illustrate","interpret"] }
+    { word:"explain", synonyms:["clarify","illustrate","interpret"] },
+    { word:"build", synonyms:["construct","assemble","erect"] },
+    { word:"reduce", synonyms:["lower","cut","diminish"] },
+    { word:"achieve", synonyms:["accomplish","attain","fulfill"] },
+    { word:"require", synonyms:["need","demand","necessitate"] },
+    { word:"provide", synonyms:["supply","offer","furnish"] },
+    { word:"consider", synonyms:["contemplate","ponder","evaluate"] },
+    { word:"emphasize", synonyms:["stress","highlight","underline"] },
+    { word:"indicate", synonyms:["signal","suggest","point to"] },
+    { word:"maintain", synonyms:["sustain","preserve","uphold"] },
+    { word:"obtain", synonyms:["acquire","gain","secure"] }
   ],
   advanced: [
     { word:"ubiquitous", synonyms:["omnipresent","pervasive","widespread"] },
@@ -2682,7 +2727,17 @@ const SYNONYM_BANKS = {
     { word:"notable", synonyms:["noteworthy","remarkable","prominent"] },
     { word:"intricate", synonyms:["complex","elaborate","complicated"] },
     { word:"versatile", synonyms:["adaptable","flexible","multifaceted"] },
-    { word:"meticulously", synonyms:["precisely","carefully","painstakingly"] }
+    { word:"meticulously", synonyms:["precisely","carefully","painstakingly"] },
+    { word:"scrutinize", synonyms:["examine closely","inspect","analyze"] },
+    { word:"exacerbate", synonyms:["worsen","aggravate","intensify"] },
+    { word:"mitigate", synonyms:["alleviate","lessen","reduce"] },
+    { word:"corroborate", synonyms:["confirm","support","substantiate"] },
+    { word:"juxtapose", synonyms:["contrast","compare"] },
+    { word:"disseminate", synonyms:["spread","distribute","circulate"] },
+    { word:"deteriorate", synonyms:["worsen","decline","degrade"] },
+    { word:"facilitate", synonyms:["ease","enable","simplify"] },
+    { word:"underscore", synonyms:["emphasize","highlight","stress"] },
+    { word:"circumvent", synonyms:["avoid","bypass","evade"] }
   ]
 };
 
@@ -2818,10 +2873,21 @@ function showSynView(view){
   else if(view === 'result') els.synResultView.classList.remove('hidden');
 }
 
+let lastSynWords = new Set();
+
 function pickSynEntries(level){
   const pool = level === 'custom' ? synCustomEntries : SYNONYM_BANKS[level];
   const size = level === 'custom' ? Math.min(SYN_ROUND_LENGTH, pool.length) : SYN_ROUND_LENGTH;
-  return shuffle(pool).slice(0, size);
+
+  // Prefer entries that weren't in the immediately previous round, then fill
+  // any remaining slots from the rest of the pool — each "try again" mixes
+  // in new words rather than risking the same set repeating back to back.
+  const fresh = shuffle(pool.filter(e => !lastSynWords.has(e.word)));
+  const seen = shuffle(pool.filter(e => lastSynWords.has(e.word)));
+  const combined = shuffle([...fresh, ...seen].slice(0, size));
+
+  lastSynWords = new Set(combined.map(e => e.word));
+  return combined;
 }
 
 els.synStartBtn.addEventListener('click', () => {
