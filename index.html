@@ -945,6 +945,118 @@ body{
 }
 .syn-entry button:hover{background:var(--red-soft);}
 
+/* ---------- Parts of speech ---------- */
+.pos-card{
+  border:1px solid var(--rule);
+  border-radius:12px;
+  padding:16px 18px;
+  margin-bottom:12px;
+}
+.pos-card-name{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:17px;
+  color:var(--ink-navy);
+  margin:0 0 4px;
+}
+.pos-card-def{
+  font-size:13.5px;
+  color:var(--graphite);
+  margin:0 0 10px;
+  line-height:1.5;
+}
+.pos-card-example{
+  background:var(--paper);
+  border-radius:8px;
+  padding:10px 12px;
+  font-size:14px;
+  color:var(--graphite);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.pos-card-example b{color:var(--ink-navy);}
+.pos-hear-btn{
+  background:none;
+  border:none;
+  color:var(--chalk-blue);
+  font-size:12px;
+  font-weight:500;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.pos-hear-btn svg{width:13px;height:13px;fill:var(--chalk-blue);}
+
+.fanboys-grid{
+  display:grid;
+  gap:9px;
+  margin-top:12px;
+}
+.fanboys-row{
+  display:flex;
+  gap:10px;
+  align-items:baseline;
+  font-size:13px;
+  line-height:1.5;
+}
+.fanboys-letter{
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:700;
+  color:var(--ink-navy);
+  background:var(--highlighter);
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  font-size:12px;
+}
+.fanboys-word{font-weight:600; color:var(--ink-navy); min-width:38px; flex-shrink:0;}
+.fanboys-desc{color:var(--graphite);}
+
+.pos-options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:18px 0 6px;
+}
+.pos-option-btn{
+  border:1.5px solid var(--rule);
+  background:var(--paper);
+  color:var(--graphite);
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:14px;
+  font-weight:600;
+  padding:14px 10px;
+  border-radius:10px;
+  cursor:pointer;
+  text-align:center;
+  text-transform:capitalize;
+}
+.pos-option-btn:hover:not(:disabled){border-color:var(--chalk-blue);}
+.pos-option-btn:disabled{cursor:default;}
+.pos-option-btn.correct{
+  background:var(--pass-soft);
+  border-color:var(--pass);
+  color:var(--pass);
+}
+.pos-option-btn.incorrect{
+  background:var(--red-soft);
+  border-color:var(--red-pen);
+  color:var(--red-pen);
+}
+@media (max-width:380px){
+  .pos-options{ grid-template-columns:1fr; }
+}
+
 .disclaimer{
   text-align:center;
   font-size:11px;
@@ -998,6 +1110,7 @@ body{
       <button class="nav-btn active" data-screen="home">Spelling Drill</button>
       <button class="nav-btn" data-screen="mywords">My Words</button>
       <button class="nav-btn" data-screen="synonyms">Synonyms</button>
+      <button class="nav-btn" data-screen="pos">Parts of Speech</button>
       <button class="nav-btn" data-screen="grammar">Grammar Check</button>
       <button class="nav-btn" data-screen="pitch">Pitch Check</button>
       <button class="nav-btn" data-screen="history">Progress</button>
@@ -1352,6 +1465,85 @@ body{
       </div>
     </div>
 
+    <!-- PARTS OF SPEECH SCREEN -->
+    <div id="pos-screen" class="hidden">
+      <div class="screen-header">
+        <div>
+          <h2 class="screen-title">Parts of speech</h2>
+          <p class="screen-subtitle">Learn the building blocks of a sentence with simple examples, then test yourself.</p>
+        </div>
+        <button class="back-link" data-screen="home">Back</button>
+      </div>
+
+      <div class="pill-row" id="pos-mode-pills">
+        <button class="pill active" data-pos-mode="learn">Learn</button>
+        <button class="pill" data-pos-mode="test">Practice Test</button>
+      </div>
+
+      <!-- LEARN SUB-VIEW -->
+      <div id="pos-learn-view">
+        <div id="pos-cards-list"></div>
+        <div class="tip-card tailored">
+          <p class="tip-eyebrow">Coordinating conjunctions</p>
+          <span class="tip-name">FANBOYS</span> — the seven short words that join two complete ideas together. Each letter stands for one of them:
+          <div class="fanboys-grid" id="fanboys-grid"></div>
+        </div>
+      </div>
+
+      <!-- PRACTICE TEST SUB-VIEW -->
+      <div id="pos-test-view" class="hidden">
+        <div id="pos-test-intro">
+          <p class="helper-text">10 quick questions — pick the part of speech for the highlighted word in each sentence.</p>
+          <button class="start-btn" id="pos-test-start-btn">Start practice test — 10 questions</button>
+        </div>
+
+        <div id="pos-quiz-view" class="hidden">
+          <div class="game-top">
+            <span class="q-counter" id="pos-q-counter">Question 1 of 10</span>
+            <span class="score-chip" id="pos-score-chip">Score: 0</span>
+          </div>
+          <div class="dots" id="pos-dots"></div>
+
+          <div class="syn-word-display">
+            <p class="screen-subtitle" style="margin:0 0 4px;">What part of speech is the highlighted word?</p>
+            <div class="syn-word" id="pos-sentence" style="font-size:clamp(18px, 5vw, 22px);"></div>
+          </div>
+
+          <div class="pos-options" id="pos-options"></div>
+
+          <div class="feedback" id="pos-feedback">
+            <div id="pos-feedback-text"></div>
+            <button class="next-btn" id="pos-next-btn">Next word →</button>
+          </div>
+        </div>
+
+        <div id="pos-result-view" class="hidden">
+          <p class="result-eyebrow">Parts of speech score</p>
+          <div class="band-score" id="pos-score-display">—</div>
+          <p class="band-descriptor" id="pos-score-descriptor"></p>
+
+          <div class="stat-row">
+            <div class="stat-box"><div class="stat-num" id="pos-stat-correct">0/10</div><div class="stat-label">Correct</div></div>
+            <div class="stat-box"><div class="stat-num" id="pos-stat-accuracy">0%</div><div class="stat-label">Accuracy</div></div>
+          </div>
+
+          <p class="review-title">Review</p>
+          <div id="pos-review-list"></div>
+
+          <div class="result-actions">
+            <button class="btn-retry" id="pos-retry-btn">Try again</button>
+            <button class="btn-settings" id="pos-settings-btn">Back to start</button>
+          </div>
+
+          <div class="tips-section">
+            <p class="tips-title">Spotting parts of speech faster</p>
+            <p class="tips-subtitle">A few habits that make this easier over time.</p>
+            <div id="pos-tips-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <p class="disclaimer">Independent practice tool inspired by listening-and-spelling tasks used in tests like PTE Academic, PTE Academic UKVI, PTE Core and IELTS. Not affiliated with or endorsed by Pearson, IDP, the British Council, or Cambridge Assessment English.</p>
@@ -1529,6 +1721,32 @@ const els = {
   synRetryBtn: document.getElementById('syn-retry-btn'),
   synSettingsBtn: document.getElementById('syn-settings-btn'),
   synTipsList: document.getElementById('syn-tips-list'),
+  posScreen: document.getElementById('pos-screen'),
+  posModePills: document.querySelectorAll('#pos-mode-pills .pill'),
+  posLearnView: document.getElementById('pos-learn-view'),
+  posTestView: document.getElementById('pos-test-view'),
+  posCardsList: document.getElementById('pos-cards-list'),
+  fanboysGrid: document.getElementById('fanboys-grid'),
+  posTestIntro: document.getElementById('pos-test-intro'),
+  posTestStartBtn: document.getElementById('pos-test-start-btn'),
+  posQuizView: document.getElementById('pos-quiz-view'),
+  posResultView: document.getElementById('pos-result-view'),
+  posQCounter: document.getElementById('pos-q-counter'),
+  posScoreChip: document.getElementById('pos-score-chip'),
+  posDots: document.getElementById('pos-dots'),
+  posSentence: document.getElementById('pos-sentence'),
+  posOptions: document.getElementById('pos-options'),
+  posFeedback: document.getElementById('pos-feedback'),
+  posFeedbackText: document.getElementById('pos-feedback-text'),
+  posNextBtn: document.getElementById('pos-next-btn'),
+  posScoreDisplay: document.getElementById('pos-score-display'),
+  posScoreDescriptor: document.getElementById('pos-score-descriptor'),
+  posStatCorrect: document.getElementById('pos-stat-correct'),
+  posStatAccuracy: document.getElementById('pos-stat-accuracy'),
+  posReviewList: document.getElementById('pos-review-list'),
+  posRetryBtn: document.getElementById('pos-retry-btn'),
+  posSettingsBtn: document.getElementById('pos-settings-btn'),
+  posTipsList: document.getElementById('pos-tips-list'),
 };
 
 function shuffle(arr){
@@ -1659,6 +1877,7 @@ function showScreen(name){
   els.mywordsScreen.classList.add('hidden');
   els.pitchScreen.classList.add('hidden');
   els.synonymScreen.classList.add('hidden');
+  els.posScreen.classList.add('hidden');
   els.navRow.classList.remove('hidden');
 
   if(name === 'home') els.setupScreen.classList.remove('hidden');
@@ -1669,6 +1888,7 @@ function showScreen(name){
   else if(name === 'mywords'){ els.mywordsScreen.classList.remove('hidden'); renderMyWordsList(); }
   else if(name === 'pitch') els.pitchScreen.classList.remove('hidden');
   else if(name === 'synonyms'){ els.synonymScreen.classList.remove('hidden'); showSynView('setup'); renderSynCustomList(); updateSynLevelHelper(); }
+  else if(name === 'pos'){ els.posScreen.classList.remove('hidden'); setPosMode('learn'); showPosTestState('intro'); }
 
   const homeGroup = ['home','game','result'];
   els.navBtns.forEach(b => b.classList.toggle('active', b.dataset.screen === name || (homeGroup.includes(name) && b.dataset.screen === 'home')));
@@ -3053,6 +3273,285 @@ els.synRetryBtn.addEventListener('click', () => {
 });
 
 els.synSettingsBtn.addEventListener('click', () => showSynView('setup'));
+
+// ---------- Parts of speech ----------
+const POS_DATA = [
+  { name:"Noun", def:"Names a person, place, thing, or idea.", sentence:"The dog sat on the mat.", target:"dog" },
+  { name:"Pronoun", def:"Takes the place of a noun, so you don't have to repeat it.", sentence:"Maria forgot her keys, so she went back home.", target:"she" },
+  { name:"Verb", def:"Shows an action, or a state of being.", sentence:"They run every morning.", target:"run" },
+  { name:"Adjective", def:"Describes or gives more detail about a noun.", sentence:"It was a sunny day.", target:"sunny" },
+  { name:"Adverb", def:"Describes a verb, an adjective, or another adverb — often answers how, when, or where.", sentence:"She sings beautifully.", target:"beautifully" },
+  { name:"Preposition", def:"Shows how a noun relates to another word — often a place, time, or direction.", sentence:"The cat is under the table.", target:"under" },
+  { name:"Conjunction", def:"Joins words, phrases, or whole sentences together.", sentence:"I wanted tea, but I made coffee instead.", target:"but" },
+  { name:"Interjection", def:"A short word or phrase that bursts out to express sudden emotion.", sentence:"Wow! That was an amazing performance.", target:"Wow" }
+];
+
+const FANBOYS_DATA = [
+  { letter:"F", word:"For", meaning:"gives a reason", example:"I left early, for I was feeling tired." },
+  { letter:"A", word:"And", meaning:"adds information", example:"She ordered tea and toast." },
+  { letter:"N", word:"Nor", meaning:"adds a negative option", example:"He doesn't like tea, nor does he like coffee." },
+  { letter:"B", word:"But", meaning:"shows contrast", example:"I'm tired, but I'll finish this first." },
+  { letter:"O", word:"Or", meaning:"shows a choice", example:"Would you like tea or coffee?" },
+  { letter:"Y", word:"Yet", meaning:"shows contrast, like \"but\"", example:"The bag was expensive, yet she bought it anyway." },
+  { letter:"S", word:"So", meaning:"shows a result", example:"It started raining, so we went inside." }
+];
+
+const POS_CATEGORIES = ["noun","pronoun","verb","adjective","adverb","preposition","conjunction","interjection"];
+
+const POS_QUESTIONS = [
+  { sentence:"The children played in the park.", target:"park", answer:"noun", explanation:"\"park\" names a place — that makes it a noun." },
+  { sentence:"Honesty is the best policy.", target:"Honesty", answer:"noun", explanation:"\"Honesty\" names an idea or quality — still a noun, even though you can't touch it." },
+  { sentence:"My sister bought a new laptop.", target:"laptop", answer:"noun", explanation:"\"laptop\" names a thing — a noun." },
+  { sentence:"The teacher praised the students.", target:"teacher", answer:"noun", explanation:"\"teacher\" names a person — a noun." },
+  { sentence:"Freedom is something everyone deserves.", target:"Freedom", answer:"noun", explanation:"\"Freedom\" names an abstract idea — still a noun." },
+
+  { sentence:"Tom lost his phone yesterday.", target:"his", answer:"pronoun", explanation:"\"his\" stands in for \"Tom's\" — that's a pronoun's job." },
+  { sentence:"We will meet you at the station.", target:"We", answer:"pronoun", explanation:"\"We\" replaces naming each person directly — a pronoun." },
+  { sentence:"This is the book I told you about.", target:"This", answer:"pronoun", explanation:"\"This\" points to something without naming it directly — a pronoun." },
+  { sentence:"Everyone enjoyed the concert.", target:"Everyone", answer:"pronoun", explanation:"\"Everyone\" refers to a group of people without naming them individually — a pronoun." },
+
+  { sentence:"She writes a letter every week.", target:"writes", answer:"verb", explanation:"\"writes\" shows the action happening — a verb." },
+  { sentence:"The children were sleeping when we arrived.", target:"sleeping", answer:"verb", explanation:"\"sleeping\" describes what the children were doing — a verb." },
+  { sentence:"He is a doctor.", target:"is", answer:"verb", explanation:"\"is\" shows a state of being rather than an action, but it's still a verb." },
+  { sentence:"They finished the project early.", target:"finished", answer:"verb", explanation:"\"finished\" shows the action that took place — a verb." },
+
+  { sentence:"We saw a beautiful sunset.", target:"beautiful", answer:"adjective", explanation:"\"beautiful\" describes the sunset — an adjective." },
+  { sentence:"He gave a brilliant speech.", target:"brilliant", answer:"adjective", explanation:"\"brilliant\" describes the speech — an adjective." },
+  { sentence:"The old house needs repairs.", target:"old", answer:"adjective", explanation:"\"old\" describes the house — an adjective." },
+  { sentence:"That was a difficult exam.", target:"difficult", answer:"adjective", explanation:"\"difficult\" describes the exam — an adjective." },
+
+  { sentence:"He drives carefully in the rain.", target:"carefully", answer:"adverb", explanation:"\"carefully\" describes how he drives — an adverb." },
+  { sentence:"She arrived early for the meeting.", target:"early", answer:"adverb", explanation:"\"early\" describes when she arrived — an adverb." },
+  { sentence:"The team played extremely well.", target:"extremely", answer:"adverb", explanation:"\"extremely\" describes another adverb, \"well\" — adverbs can modify adverbs too." },
+  { sentence:"They live nearby.", target:"nearby", answer:"adverb", explanation:"\"nearby\" describes where they live — an adverb." },
+
+  { sentence:"The keys are inside the drawer.", target:"inside", answer:"preposition", explanation:"\"inside\" shows where the keys are in relation to the drawer — a preposition." },
+  { sentence:"We will leave after lunch.", target:"after", answer:"preposition", explanation:"\"after\" shows a time relationship — a preposition." },
+  { sentence:"She walked across the bridge.", target:"across", answer:"preposition", explanation:"\"across\" shows direction — a preposition." },
+  { sentence:"The gift is from my grandmother.", target:"from", answer:"preposition", explanation:"\"from\" shows where the gift came from — a preposition." },
+
+  { sentence:"I wanted tea, but I made coffee instead.", target:"but", answer:"conjunction", explanation:"\"but\" is one of the FANBOYS conjunctions — it joins two contrasting ideas." },
+  { sentence:"She studied hard, so she passed the exam.", target:"so", answer:"conjunction", explanation:"\"so\" is a FANBOYS conjunction that introduces a result." },
+  { sentence:"He doesn't like tea, nor does he like coffee.", target:"nor", answer:"conjunction", explanation:"\"nor\" is a FANBOYS conjunction that adds a second negative idea." },
+  { sentence:"We can stay in or go out tonight.", target:"or", answer:"conjunction", explanation:"\"or\" is a FANBOYS conjunction that shows a choice between options." },
+  { sentence:"I left early, for I was feeling unwell.", target:"for", answer:"conjunction", explanation:"\"for\" is a FANBOYS conjunction here — it gives a reason, similar to \"because\"." },
+
+  { sentence:"Ouch! That really hurt.", target:"Ouch", answer:"interjection", explanation:"\"Ouch\" bursts out to express pain — an interjection." },
+  { sentence:"Wow, I can't believe you did that!", target:"Wow", answer:"interjection", explanation:"\"Wow\" expresses surprise on its own — an interjection." },
+  { sentence:"Hey! Watch where you're going.", target:"Hey", answer:"interjection", explanation:"\"Hey\" grabs attention suddenly — an interjection." }
+];
+
+const POS_ROUND_LENGTH = 10;
+const POS_TIPS = [
+  { name: 'Find the verb first', body: "In a tricky sentence, locate the verb first — everything else in the sentence relates back to it, which makes the other parts easier to identify." },
+  { name: 'Ask what job the word is doing', body: "The same word can be different parts of speech in different sentences (e.g. \"run\" as a verb vs. \"a morning run\" as a noun) — always judge by its job in that sentence, not the word alone." },
+  { name: 'Adjectives sit near nouns, adverbs near verbs', body: "If a describing word is right next to a noun, it's usually an adjective; if it's describing how/when/where something happens, it's usually an adverb." },
+  { name: 'Memorize FANBOYS as one word', body: "Treat \"FANBOYS\" as a single memory trick — once it's automatic, spotting coordinating conjunctions in any sentence becomes much faster." }
+];
+
+let posMode = 'learn';
+let posTestState = 'intro';
+let posRound = { questions: [], index: 0, correctCount: 0, results: [], mistakes: [] };
+let lastPosSentences = new Set();
+
+function highlightTarget(sentence, target){
+  const escaped = target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(`\\b${escaped}\\b`);
+  return sentence.replace(re, `<b>${target}</b>`);
+}
+
+function speakPlainText(text){
+  if(!speakAvailable()) return;
+  try{
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 0.88;
+    window.speechSynthesis.speak(utter);
+  }catch(e){ /* silently ignore */ }
+}
+
+function renderPosLearnView(){
+  els.posCardsList.innerHTML = '';
+  POS_DATA.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'pos-card';
+    card.innerHTML = `
+      <p class="pos-card-name">${item.name}</p>
+      <p class="pos-card-def">${item.def}</p>
+      <div class="pos-card-example">
+        <span>${highlightTarget(item.sentence, item.target)}</span>
+        <button class="pos-hear-btn" data-sentence="${item.sentence.replace(/"/g,'&quot;')}">
+          <svg viewBox="0 0 24 24"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-.77-3.29-2-4.24v8.48c1.23-.95 2-2.47 2-4.24z"/></svg>
+          Hear example
+        </button>
+      </div>
+    `;
+    els.posCardsList.appendChild(card);
+  });
+
+  els.fanboysGrid.innerHTML = FANBOYS_DATA.map(f => `
+    <div class="fanboys-row">
+      <span class="fanboys-letter">${f.letter}</span>
+      <span class="fanboys-word">${f.word}</span>
+      <span class="fanboys-desc">— ${f.meaning}. <em>"${escapeHtml(f.example)}"</em></span>
+    </div>
+  `).join('');
+}
+
+els.posCardsList.addEventListener('click', (e) => {
+  const btn = e.target.closest('.pos-hear-btn');
+  if(!btn) return;
+  speakPlainText(btn.dataset.sentence);
+});
+
+function setPosMode(mode){
+  posMode = mode;
+  els.posModePills.forEach(b => b.classList.toggle('active', b.dataset.posMode === mode));
+  els.posLearnView.classList.toggle('hidden', mode !== 'learn');
+  els.posTestView.classList.toggle('hidden', mode !== 'test');
+  if(mode === 'learn') renderPosLearnView();
+}
+
+els.posModePills.forEach(btn => btn.addEventListener('click', () => setPosMode(btn.dataset.posMode)));
+
+function showPosTestState(state){
+  posTestState = state;
+  els.posTestIntro.classList.toggle('hidden', state !== 'intro');
+  els.posQuizView.classList.toggle('hidden', state !== 'quiz');
+  els.posResultView.classList.toggle('hidden', state !== 'result');
+}
+
+function pickPosQuestions(){
+  const fresh = shuffle(POS_QUESTIONS.filter(q => !lastPosSentences.has(q.sentence)));
+  const seen = shuffle(POS_QUESTIONS.filter(q => lastPosSentences.has(q.sentence)));
+  const combined = shuffle([...fresh, ...seen].slice(0, POS_ROUND_LENGTH));
+  lastPosSentences = new Set(combined.map(q => q.sentence));
+  return combined;
+}
+
+function startPosTest(){
+  const questions = pickPosQuestions();
+  posRound = { questions, index: 0, correctCount: 0, results: [], mistakes: [] };
+  showPosTestState('quiz');
+  buildPosDots();
+  loadPosQuestion();
+}
+
+els.posTestStartBtn.addEventListener('click', startPosTest);
+els.posRetryBtn.addEventListener('click', startPosTest);
+els.posSettingsBtn.addEventListener('click', () => showPosTestState('intro'));
+
+function buildPosDots(){
+  els.posDots.innerHTML = '';
+  for(let i=0;i<posRound.questions.length;i++){
+    const d = document.createElement('div');
+    d.className = 'dot';
+    els.posDots.appendChild(d);
+  }
+}
+
+function updatePosDots(){
+  const dotEls = els.posDots.children;
+  for(let i=0;i<dotEls.length;i++){
+    dotEls[i].classList.remove('current','correct','incorrect');
+    if(posRound.results[i] === true) dotEls[i].classList.add('correct');
+    else if(posRound.results[i] === false) dotEls[i].classList.add('incorrect');
+    else if(i === posRound.index) dotEls[i].classList.add('current');
+  }
+}
+
+function currentPosQuestion(){ return posRound.questions[posRound.index]; }
+
+function buildPosOptions(question){
+  const wrongChoices = shuffle(POS_CATEGORIES.filter(c => c !== question.answer)).slice(0, 3);
+  return shuffle([question.answer, ...wrongChoices]);
+}
+
+function loadPosQuestion(){
+  const question = currentPosQuestion();
+  els.posQCounter.textContent = `Question ${posRound.index+1} of ${posRound.questions.length}`;
+  els.posScoreChip.textContent = `Score: ${posRound.correctCount}`;
+  updatePosDots();
+
+  els.posSentence.innerHTML = highlightTarget(question.sentence, question.target);
+  els.posFeedback.classList.remove('show','correct','incorrect');
+
+  const options = buildPosOptions(question);
+  els.posOptions.innerHTML = '';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'pos-option-btn';
+    btn.textContent = opt;
+    btn.dataset.value = opt;
+    btn.addEventListener('click', () => submitPosAnswer(opt));
+    els.posOptions.appendChild(btn);
+  });
+}
+
+function submitPosAnswer(selected){
+  const question = currentPosQuestion();
+  const isCorrect = selected === question.answer;
+
+  posRound.results[posRound.index] = isCorrect;
+  if(isCorrect) posRound.correctCount++;
+  else posRound.mistakes.push({ sentence: question.sentence, target: question.target, picked: selected, answer: question.answer, explanation: question.explanation });
+
+  Array.from(els.posOptions.children).forEach(btn => {
+    btn.disabled = true;
+    if(btn.dataset.value === question.answer) btn.classList.add('correct');
+    else if(btn.dataset.value === selected) btn.classList.add('incorrect');
+  });
+
+  els.posFeedback.classList.add('show', isCorrect ? 'correct' : 'incorrect');
+  els.posFeedbackText.innerHTML = isCorrect
+    ? `Correct. ${escapeHtml(question.explanation)}`
+    : `Not quite — "${escapeHtml(question.target)}" is a <strong>${question.answer}</strong>. ${escapeHtml(question.explanation)}`;
+
+  updatePosDots();
+  els.posScoreChip.textContent = `Score: ${posRound.correctCount}`;
+}
+
+els.posNextBtn.addEventListener('click', () => {
+  posRound.index++;
+  if(posRound.index >= posRound.questions.length) endPosTest();
+  else loadPosQuestion();
+});
+
+function endPosTest(){
+  showPosTestState('result');
+  const total = posRound.questions.length;
+  const accuracy = Math.round((posRound.correctCount/total)*100);
+
+  els.posScoreDisplay.textContent = `${posRound.correctCount} / ${total}`;
+  let descriptor = 'Foundation';
+  if(accuracy >= 90) descriptor = 'Excellent grasp';
+  else if(accuracy >= 70) descriptor = 'Good grasp';
+  else if(accuracy >= 50) descriptor = 'Developing';
+  els.posScoreDescriptor.textContent = descriptor;
+
+  els.posStatCorrect.textContent = `${posRound.correctCount}/${total}`;
+  els.posStatAccuracy.textContent = `${accuracy}%`;
+
+  els.posReviewList.innerHTML = '';
+  if(!posRound.mistakes.length){
+    els.posReviewList.innerHTML = '<p class="no-mistakes">Perfect round — no mistakes to review.</p>';
+  } else {
+    posRound.mistakes.forEach(m => {
+      const row = document.createElement('div');
+      row.className = 'review-item';
+      row.innerHTML = `<span class="review-wrong">${escapeHtml(m.target)} → ${escapeHtml(m.picked)}</span><span class="review-correct">${escapeHtml(m.answer)}</span>`;
+      els.posReviewList.appendChild(row);
+    });
+  }
+
+  els.posTipsList.innerHTML = '';
+  POS_TIPS.forEach(tip => {
+    const card = document.createElement('div');
+    card.className = 'tip-card';
+    card.innerHTML = `<span class="tip-name">${tip.name}.</span> ${tip.body}`;
+    els.posTipsList.appendChild(card);
+  });
+}
 </script>
 </body>
 </html>
