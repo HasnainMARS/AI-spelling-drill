@@ -72,7 +72,7 @@ Since it's a single static file, hosting takes one step:
 
 ## Privacy
 
-No analytics, no tracking, no third-party scripts beyond Google Fonts (for typography) and, only when you use Grammar Check, a direct call to Anthropic's API with the text you submit. Recorded audio for the Pitch Analyzer never leaves your device — it's processed in memory and discarded.
+No analytics, no tracking, no third-party scripts beyond Google Fonts (for typography) and, only when you use Grammar check, a direct call to Anthropic's API with the text you submit. Recorded audio for the Pitch Analyzer never leaves your device — it's processed in memory and discarded.
 
 ## Disclaimer
 
