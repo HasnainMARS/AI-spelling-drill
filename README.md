@@ -22,7 +22,7 @@ Hear a word read aloud and type what you heard, the same way "Write from Dictati
 - A voice accent picker (Default / American / British / Australian), since real listening sections use multiple native-English accents
 - Letter-by-letter diff feedback showing exactly where a misspelling went wrong
 - A "Sharpen your spelling" section with tips tailored to the actual mistakes made that round
-- Share your score via the native share sheet or clipboard
+- Share your score via the native share sheet or clipboard.
 
 ### ✏️ My Words
 Build a personal word list — add words one at a time or paste a whole batch at once — and drill yourself on just those words by selecting "Custom" as the word list.
